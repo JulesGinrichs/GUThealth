@@ -166,18 +166,24 @@ const scale=(t,f)=>Object.fromEntries(NUT.map(([k])=>[k,(t[k]||0)*f]));
 const addTo=(a,b)=>NUT.forEach(([k])=>a[k]+=b[k]||0);
 const isNull=v=>v===null||v===undefined||v==='';
 function newIng(name){return{id:uid(),name,img:'',n:Object.fromEntries(NUT.map(([k])=>[k,null])),plant:null,fodmap:'',note:'',phases:[]}}
-function missingFields(i){const m=NUT.filter(([k])=>isNull(i.n[k])).map(x=>x[1]);if(i.plant!==true&&i.plant!==false)m.push('pflanzlich ja/nein');return m}
+const UNITS={g:'g',ml:'ml',stk:'Stück',el:'EL',tl:'TL',prise:'Prise'};
+const qtyOf=it=>it.qty??it.g??0, unitOf=it=>UNITS[it.unit]?it.unit:'g';
+const usesPiece=i=>S.recipes.some(r=>(r.items||[]).some(it=>it.ingId===i.id&&unitOf(it)==='stk'))||S.meals.some(m=>m.type==='ing'&&m.refId===i.id&&unitOf(m)==='stk');
+function toGrams(i,qty,unit){if(!i)return null;switch(unit){case'ml':return qty*(i.density||1);case'stk':return i.perPiece?qty*i.perPiece:null;case'el':return qty*(i.perEL||15);case'tl':return qty*(i.perTL||5);case'prise':return qty*0.5;default:return qty}}
+const itemGrams=it=>toGrams(ing(it.ingId),qtyOf(it),unitOf(it));
+function fmtQty(it,i){const u=unitOf(it),q=qtyOf(it);if(u==='g')return f1(q)+' g';const g=toGrams(i,q,u);return `${f1(q)} ${UNITS[u]}${g===null?'':' <span class="muted">(≈ '+f1(g)+' g)</span>'}`}
+function missingFields(i){const m=NUT.filter(([k])=>isNull(i.n[k])).map(x=>x[1]);if(i.plant!==true&&i.plant!==false)m.push('pflanzlich ja/nein');if(!i.perPiece&&usesPiece(i))m.push('Gewicht pro Stück');return m}
 const incomplete=i=>missingFields(i).length>0;
-function recipeTotals(r){const t=zero();(r.items||[]).forEach(it=>{const i=ing(it.ingId);if(!i)return;NUT.forEach(([k])=>{if(!isNull(i.n[k]))t[k]+=i.n[k]*it.g/100})});return t}
-const recipeIncomplete=r=>(r.items||[]).map(it=>ing(it.ingId)).filter(i=>i&&incomplete(i));
+function recipeTotals(r){const t=zero();(r.items||[]).forEach(it=>{const i=ing(it.ingId),g=itemGrams(it);if(!i||g===null)return;NUT.forEach(([k])=>{if(!isNull(i.n[k]))t[k]+=i.n[k]*g/100})});return t}
+const recipeIncomplete=r=>[...new Set((r.items||[]).filter(it=>{const i=ing(it.ingId);return i&&(incomplete(i)||itemGrams(it)===null)}).map(it=>it.ingId))].map(ing);
 const recipePlants=r=>[...new Set((r.items||[]).map(it=>ing(it.ingId)).filter(i=>i&&i.plant===true).map(i=>i.id))];
-const recipeGrams=r=>(r.items||[]).reduce((s,it)=>s+(it.g||0),0);
+const recipeGrams=r=>(r.items||[]).reduce((s,it)=>s+(itemGrams(it)||0),0);
 function mealInfo(m){
   if(m.type==='recipe'){const r=rec(m.refId);if(!r)return{name:'(gelöschtes Rezept)',img:'',t:zero(),plants:[],sub:'',inc:false};
     return{name:r.title,img:r.img,t:scale(recipeTotals(r),(m.portions||1)/(r.portions||1)),plants:recipePlants(r),sub:f1(m.portions)+' Portion(en)',inc:recipeIncomplete(r).length>0}}
   const i=ing(m.refId);if(!i)return{name:'(gelöschte Zutat)',img:'',t:zero(),plants:[],sub:'',inc:false};
-  const t=zero();NUT.forEach(([k])=>{if(!isNull(i.n[k]))t[k]=i.n[k]*m.g/100});
-  return{name:i.name,img:i.img,t,plants:i.plant===true?[i.id]:[],sub:f1(m.g)+' g',inc:incomplete(i)}}
+  const t=zero(),g=toGrams(i,qtyOf(m),unitOf(m));if(g!==null)NUT.forEach(([k])=>{if(!isNull(i.n[k]))t[k]=i.n[k]*g/100});
+  return{name:i.name,img:i.img,t,plants:i.plant===true?[i.id]:[],sub:fmtQty(m,i),inc:incomplete(i)||g===null}}
 function weekPlants(d){const ws=weekStart(d),we=addDays(ws,6),set=new Set();S.meals.filter(m=>m.date>=ws&&m.date<=we).forEach(m=>mealInfo(m).plants.forEach(p=>set.add(p)));return[...set].map(ing).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name))}
 function cycleInfo(d){if(S.settings.cycleMode==='pill')return{pill:true};const ps=[...S.periods].sort();const past=ps.filter(p=>p<=d);if(!past.length)return null;const last=past[past.length-1];
   let L=S.settings.cycleLen||28;const ds=[];for(let i=1;i<ps.length;i++){const x=diffDays(ps[i-1],ps[i]);if(x>=18&&x<=45)ds.push(x)}if(ds.length)L=Math.round(avg(ds.slice(-6)));
@@ -262,12 +268,12 @@ openSheet(`<h3>Mahlzeit eintragen</h3>
 ${M.type==='recipe'?(rs.length?`<label>Rezept</label><select onchange="M.refId=this.value"><option value="">– auswählen –</option>${rs.map(r=>`<option value="${r.id}" ${r.id===M.refId?'selected':''}>${esc(r.title)}</option>`).join('')}</select>
 <label>Portionen gegessen</label><input type="text" inputmode="decimal" value="${f1(M.portions)}" oninput="M.portions=num(this.value)">`:'<p class="muted" style="margin-top:10px">Noch keine Rezepte vorhanden.</p>')
 :(is.length?`<label>Lebensmittel</label><select onchange="M.refId=this.value"><option value="">– auswählen –</option>${is.map(i=>`<option value="${i.id}" ${i.id===M.refId?'selected':''}>${esc(i.name)}</option>`).join('')}</select>
-<label>Menge (g)</label><input type="text" inputmode="decimal" value="${M.g}" oninput="M.g=num(this.value)">`:'<p class="muted" style="margin-top:10px">Noch keine Zutaten vorhanden.</p>')}
+<label>Menge</label><div class="row"><input style="flex:1" type="text" inputmode="decimal" value="${f1(M.g)}" oninput="M.g=num(this.value)"><select style="width:110px" onchange="M.unit=this.value">${Object.entries(UNITS).map(([k,l])=>`<option value="${k}" ${(M.unit||'g')===k?'selected':''}>${l}</option>`).join('')}</select></div>`:'<p class="muted" style="margin-top:10px">Noch keine Zutaten vorhanden.</p>')}
 <div class="grid2"><div><label>Datum</label><input type="date" value="${M.date}" onchange="M.date=this.value"></div><div><label>Uhrzeit</label><input type="time" value="${M.time}" onchange="M.time=this.value"></div></div>
 <div class="row" style="margin-top:16px"><button class="btn sec" onclick="closeSheet()">Abbrechen</button><button class="btn" style="flex:1" onclick="saveMeal()">Speichern</button></div>`)}
 function saveMeal(){if(!M.refId)return toast('Bitte etwas auswählen');if(!isDate(M.date))return toast('Bitte ein Datum wählen');
   const m={id:uid(),type:M.type,refId:M.refId,date:M.date,time:M.time||''};
-  if(M.type==='recipe'){if(!(M.portions>0))return toast('Bitte Portionen angeben');m.portions=M.portions}else{if(!(M.g>0))return toast('Bitte Menge angeben');m.g=M.g}
+  if(M.type==='recipe'){if(!(M.portions>0))return toast('Bitte Portionen angeben');m.portions=M.portions}else{if(!(M.g>0))return toast('Bitte Menge angeben');m.qty=M.g;m.unit=M.unit||'g'}
   S.meals.push(m);save('meals');closeSheet();if(st.tab==='heute')st.date=m.date;render();
   toast(mealInfo(m).inc?'Gespeichert – Nährwerte noch unvollständig':'Gespeichert ✓')}
 
@@ -378,7 +384,7 @@ function vRecipe(id){const r=rec(id);if(!r){st.view=null;return vRezepte()}
 <div class="card" style="padding:0;overflow:hidden">${r.img?`<img class="hero" src="${esc(r.img)}" alt="">`:''}<div style="padding:14px"><h2 style="margin:0 0 4px;font-size:21px">${esc(r.title)}</h2><div class="muted">${f1(r.portions)} Portion${r.portions==1?'':'en'} · ${f1(recipeGrams(r))} g gesamt · 🌿 ${pl.length} Pflanze${pl.length==1?'':'n'}</div>${(r.phases||[]).map(p=>`<span class="badge">${PH_ICON[p]} ${PH[p]}</span>`).join('')}</div></div>
 ${inc.length?`<div class="warn">⚠️ Bei ${inc.length} Zutat${inc.length>1?'en':''} fehlen Daten (${inc.map(i=>esc(i.name)).join(', ')}). Die Nährwerte unten sind deshalb unvollständig.<div style="margin-top:8px"><button class="btn sm" onclick="event.stopPropagation();fillMissing('${r.id}')">Jetzt ergänzen</button></div></div>`:''}
 <div class="card"><h2>Pro Portion</h2>${nutGrid(per)}<h2 style="margin-top:14px">Ganzes Rezept</h2>${nutGrid(t)}</div>
-<div class="card"><h2>Zutaten</h2><div class="list">${(r.items||[]).map(it=>{const i=ing(it.ingId);if(!i)return'';return `<div class="it" onclick="openIngEditor('${i.id}')">${thumb(i.img,'🥕')}<div style="flex:1;min-width:0"><b>${esc(i.name)}</b> ${i.plant?'🌿':''}<div class="muted">${f1(it.g)} g ${incomplete(i)?'<span class="badge w">Daten fehlen</span>':''}</div></div><span class="muted">${isNull(i.n.kcal)?'':Math.round(i.n.kcal*it.g/100)+' kcal'}</span></div>`}).join('')}</div></div>
+<div class="card"><h2>Zutaten</h2><div class="list">${(r.items||[]).map(it=>{const i=ing(it.ingId);if(!i)return'';return `<div class="it" onclick="openIngEditor('${i.id}')">${thumb(i.img,'🥕')}<div style="flex:1;min-width:0"><b>${esc(i.name)}</b> ${i.plant?'🌿':''}<div class="muted">${fmtQty(it,i)} ${incomplete(i)?'<span class="badge w">Daten fehlen</span>':''}</div></div><span class="muted">${isNull(i.n.kcal)||itemGrams(it)===null?'':Math.round(i.n.kcal*itemGrams(it)/100)+' kcal'}</span></div>`}).join('')}</div></div>
 ${r.steps?`<div class="card"><h2>Zubereitung</h2><div style="white-space:pre-wrap">${esc(r.steps)}</div></div>`:''}
 ${r.note?`<div class="card"><h2>Verträglichkeit</h2><div style="white-space:pre-wrap">${esc(r.note)}</div></div>`:''}
 <div class="row"><button class="btn" style="flex:1" onclick="openMeal({type:'recipe',refId:'${r.id}'})">🍽️ Gegessen</button><button class="btn sec" onclick="openRecipeEditor('${r.id}')">Bearbeiten</button><button class="btn red" onclick="delRecipe('${r.id}')">🗑</button></div>`}
@@ -387,14 +393,14 @@ async function delRecipe(id){if(!await ask('Rezept wirklich löschen?','Löschen
 /* Rezept-Editor */
 let D=null;
 function openRecipeEditor(id){const r=id?rec(id):null;D=r?JSON.parse(JSON.stringify(r)):{id:null,title:'',img:'',portions:2,items:[],steps:'',note:'',phases:[]};
-  D.phases=D.phases||[];D.rows=D.items.map(it=>({name:ing(it.ingId)?.name||'',g:String(it.g).replace('.',',')}));if(!D.rows.length)D.rows.push({name:'',g:''},{name:'',g:''});renderRecipeEditor()}
-function rowsHtml(){return D.rows.map((r,i)=>`<div class="row" style="margin-bottom:6px"><input list="ingNames" style="flex:2" placeholder="Zutat, z. B. Karotte" value="${esc(r.name)}" oninput="D.rows[${i}].name=this.value"><input style="flex:1;min-width:0" type="text" inputmode="decimal" placeholder="g" value="${esc(r.g)}" oninput="D.rows[${i}].g=this.value"><button type="button" class="btn red sm" onclick="D.rows.splice(${i},1);$('#rows').innerHTML=rowsHtml()">✕</button></div>`).join('')}
+  D.phases=D.phases||[];D.rows=D.items.map(it=>({name:ing(it.ingId)?.name||'',g:String(qtyOf(it)).replace('.',','),unit:unitOf(it)}));if(!D.rows.length)D.rows.push({name:'',g:'',unit:'g'},{name:'',g:'',unit:'g'});renderRecipeEditor()}
+function rowsHtml(){return D.rows.map((r,i)=>`<div class="row" style="margin-bottom:6px"><input list="ingNames" style="flex:1;min-width:0" placeholder="Zutat, z. B. Zwiebel" value="${esc(r.name)}" oninput="D.rows[${i}].name=this.value"><input style="width:62px;flex:none" type="text" inputmode="decimal" placeholder="Menge" value="${esc(r.g)}" oninput="D.rows[${i}].g=this.value"><select style="width:78px;flex:none;padding:10px 4px" onchange="D.rows[${i}].unit=this.value">${Object.entries(UNITS).map(([k,l])=>`<option value="${k}" ${(r.unit||'g')===k?'selected':''}>${l}</option>`).join('')}</select><button type="button" class="btn red sm" onclick="D.rows.splice(${i},1);$('#rows').innerHTML=rowsHtml()">✕</button></div>`).join('')}
 function renderRecipeEditor(){openSheet(`<h3>${D.id?'Rezept bearbeiten':'Neues Rezept'}</h3>
 <label>Name</label><input value="${esc(D.title)}" oninput="D.title=this.value" placeholder="z. B. Ofengemüse mit Reis">
 <label>Bild vom Gericht</label><div id="rImg">${imgPick(D.img,'pickRecipeImg','🍲')}</div>
 <label>Portionen</label><input type="text" inputmode="decimal" value="${f1(D.portions)}" oninput="D.portions=num(this.value)||1">
-<label>Zutaten (Menge in g bzw. ml)</label><div id="rows">${rowsHtml()}</div>
-<button type="button" class="btn sec sm" onclick="D.rows.push({name:'',g:''});$('#rows').innerHTML=rowsHtml()">+ Zutat</button>
+<label>Zutaten</label><div id="rows">${rowsHtml()}</div>
+<button type="button" class="btn sec sm" onclick="D.rows.push({name:'',g:'',unit:'g'});$('#rows').innerHTML=rowsHtml()">+ Zutat</button>
 <div class="muted" style="margin-top:6px">Neue Zutaten werden automatisch angelegt – fehlende Nährwerte fragt die App danach ab.</div>
 <label>Zubereitung</label><textarea rows="5" oninput="D.steps=this.value">${esc(D.steps)}</textarea>
 <label>Notiz zur Verträglichkeit</label><textarea rows="2" oninput="D.note=this.value" placeholder="z. B. gut verträglich ohne Zwiebel">${esc(D.note)}</textarea>
@@ -408,7 +414,7 @@ function saveRecipe(){const title=(D.title||'').trim();if(!title)return toast('B
   const items=[],created=[];
   for(const row of D.rows){const name=(row.name||'').trim();if(!name)continue;const g=num(row.g);if(g===null||g<=0)return toast(`Menge für „${name}“ fehlt`);
     let i=findIngByName(name);if(!i){i=newIng(name);S.ingredients.push(i);created.push(i)}
-    const ex=items.find(x=>x.ingId===i.id);if(ex)ex.g+=g;else items.push({ingId:i.id,g})}
+    const unit=UNITS[row.unit]?row.unit:'g';const ex=items.find(x=>x.ingId===i.id&&x.unit===unit);if(ex)ex.qty+=g;else items.push({ingId:i.id,qty:g,unit})}
   if(!items.length)return toast('Bitte mindestens eine Zutat eintragen');
   const r={id:D.id||uid(),title,img:D.img,portions:D.portions||1,items,steps:D.steps||'',note:D.note||'',phases:D.phases,created:D.created||Date.now()};
   const idx=S.recipes.findIndex(x=>x.id===r.id);if(idx>=0)S.recipes[idx]=r;else S.recipes.push(r);
@@ -444,6 +450,9 @@ openSheet(`${qi>=0?`<div class="warn" style="cursor:default">Fehlende Daten erg�
 <label>Bild</label><div id="iImg">${imgPick(E.img,'pickIngImg','🥕')}</div>
 <label>Nährwerte pro 100 g <span style="font-weight:400">– gelb = fehlt noch (z. B. von der Verpackung)</span></label>
 <div class="grid2">${NUT.map(([k,l,u])=>`<div><div class="muted" style="margin-bottom:3px">${l} (${u})</div><input class="${isNull(E.n[k])?'miss':''}" type="text" inputmode="decimal" value="${isNull(E.n[k])?'':String(E.n[k]).replace('.',',')}" placeholder="fehlt" oninput="E.n['${k}']=num(this.value);this.classList.toggle('miss',E.n['${k}']===null)"></div>`).join('')}</div>
+<label>Umrechnung in Gramm <span style="font-weight:400">– für Mengen in Stück, EL, TL oder ml</span></label>
+<div class="grid2">${[['perPiece','1 Stück wiegt (g)','z. B. 80',usesPiece(E)],['perEL','1 EL wiegt (g)','Standard 15',false],['perTL','1 TL wiegt (g)','Standard 5',false],['density','1 ml wiegt (g)','Standard 1',false]].map(([k,l,ph,need])=>`<div><div class="muted" style="margin-bottom:3px">${l}</div><input class="${need&&!E[k]?'miss':''}" type="text" inputmode="decimal" placeholder="${need?'fehlt':ph}" value="${E[k]?String(E[k]).replace('.',','):''}" oninput="E['${k}']=num(this.value)||null;${need?`this.classList.toggle('miss',!E['${k}'])`:''}"></div>`).join('')}</div>
+${usesPiece(E)&&!E.perPiece?'<div class="muted" style="margin-top:4px">⚠️ Wird in einem Rezept in Stück angegeben – bitte das Gewicht pro Stück eintragen (z. B. 1 Zwiebel ≈ 80 g, 1 Knoblauchzehe ≈ 4 g).</div>':''}
 <label>Pflanzlich? (zählt für die ${S.settings.plantGoal||30} Pflanzen pro Woche)</label>
 <select class="${E.plant===null?'miss':''}" onchange="E.plant=this.value===''?null:this.value==='1';this.classList.toggle('miss',E.plant===null)"><option value="">– bitte wählen –</option><option value="1" ${E.plant===true?'selected':''}>🌿 Ja (Gemüse, Obst, Getreide, Hülsenfrüchte, Nüsse, Samen, Kräuter …)</option><option value="0" ${E.plant===false?'selected':''}>Nein</option></select>
 <label>FODMAP / Verträglichkeit</label><select onchange="E.fodmap=this.value">${Object.entries(FOD).map(([k,l])=>`<option value="${k}" ${E.fodmap===k?'selected':''}>${l}</option>`).join('')}</select>
@@ -574,7 +583,7 @@ function vMehr(){const lb=S.settings.lastBackup;return `
 <div class="card"><h2>⚙️ Einstellungen</h2><label style="margin-top:0">Erscheinungsbild</label><div class="chips">${[['auto','📱 Wie iPhone'],['light','☀️ Hell'],['dark','🌙 Dunkel']].map(([k,l])=>`<button class="chip ${S.settings.theme===k?'on':''}" onclick="setTheme('${k}')">${l}</button>`).join('')}</div><label>Dunkles Design</label><div class="chips">${Object.entries(DS).map(([k,[l]])=>`<button class="chip ${S.settings.darkStyle===k?'on':''}" onclick="setDarkStyle('${k}')">${l}</button>`).join('')}</div><label>Wochenziel Pflanzenvielfalt</label><input type="number" inputmode="numeric" value="${S.settings.plantGoal}" onchange="setSetting('plantGoal',Math.max(5,+this.value||30))"></div>
 <div class="card"><h2>📊 Überblick</h2><div class="muted">${S.recipes.length} Rezepte · ${S.ingredients.length} Zutaten · ${S.meals.length} Mahlzeiten · ${Object.keys(S.symptoms).length} Bauch-Einträge · ${Object.keys(S.wellbeing).length} Befindens-Einträge · ${S.rides.length} Radfahrten · ${S.meds.length} Medikamenten-Einnahmen · ${S.periods.length} Perioden</div></div>
 <div class="card"><h2>🗑️ Zurücksetzen</h2><button class="btn red full" onclick="wipe()">Alle Daten löschen</button></div>
-<div class="muted" style="text-align:center;margin:10px 0">BauchGut · Version 1.7</div>`}
+<div class="muted" style="text-align:center;margin:10px 0">BauchGut · Version 1.8</div>`}
 async function exportData(){const data=JSON.stringify({app:'BauchGut',v:1,exported:new Date().toISOString(),data:S});const name=`bauchgut-backup-${today()}.json`;
   const done=()=>{S.settings.lastBackup=new Date().toISOString();save('settings');render();toast('Backup erstellt ✓')};
   let file;try{file=new File([data],name,{type:'application/json'})}catch(e){file=new Blob([data],{type:'application/json'})}
@@ -586,9 +595,9 @@ function clean(d){const id=x=>String(x||'').replace(/[^a-z0-9]/gi,'').slice(0,40
   {const pr=d.profile||{};out.profile={birth:isDate(pr.birth||'')?pr.birth:null,height:n(pr.height),activity:ACT[pr.activity]?pr.activity:'alltag'}}
   (d.weights||[]).forEach(w=>{if(isDate(w.date)&&n(w.kg)>0)out.weights.push({date:w.date,kg:n(w.kg)})});
   (d.rides||[]).forEach(r=>{if(isDate(r.date)&&n(r.km)>0)out.rides.push({id:id(r.id),date:r.date,km:n(r.km),min:n(r.min)||0,type:r.type==='ebike'?'ebike':'bike',note:String(r.note||'')})});
-  (d.ingredients||[]).forEach(i=>out.ingredients.push({id:id(i.id),name:String(i.name||'?'),img:img(i.img),n:Object.fromEntries(NUT.map(([k])=>[k,n(i.n?.[k])])),plant:i.plant===true?true:i.plant===false?false:null,fodmap:['gruen','gelb','rot'].includes(i.fodmap)?i.fodmap:'',note:String(i.note||''),phases:(i.phases||[]).filter(p=>PH[p])}));
-  (d.recipes||[]).forEach(r=>out.recipes.push({id:id(r.id),title:String(r.title||'?'),img:img(r.img),portions:n(r.portions)||1,items:(r.items||[]).map(it=>({ingId:id(it.ingId),g:n(it.g)||0})),steps:String(r.steps||''),note:String(r.note||''),phases:(r.phases||[]).filter(p=>PH[p]),created:n(r.created)||Date.now()}));
-  (d.meals||[]).forEach(m=>{if(isDate(m.date))out.meals.push({id:id(m.id),type:m.type==='ing'?'ing':'recipe',refId:id(m.refId),date:m.date,time:/^\d{2}:\d{2}$/.test(m.time)?m.time:'',portions:n(m.portions)||1,g:n(m.g)||0})});
+  (d.ingredients||[]).forEach(i=>out.ingredients.push({id:id(i.id),name:String(i.name||'?'),img:img(i.img),n:Object.fromEntries(NUT.map(([k])=>[k,n(i.n?.[k])])),plant:i.plant===true?true:i.plant===false?false:null,fodmap:['gruen','gelb','rot'].includes(i.fodmap)?i.fodmap:'',note:String(i.note||''),phases:(i.phases||[]).filter(p=>PH[p]),perPiece:n(i.perPiece),perEL:n(i.perEL),perTL:n(i.perTL),density:n(i.density)}));
+  (d.recipes||[]).forEach(r=>out.recipes.push({id:id(r.id),title:String(r.title||'?'),img:img(r.img),portions:n(r.portions)||1,items:(r.items||[]).map(it=>({ingId:id(it.ingId),qty:n(it.qty??it.g)||0,unit:UNITS[it.unit]?it.unit:'g'})),steps:String(r.steps||''),note:String(r.note||''),phases:(r.phases||[]).filter(p=>PH[p]),created:n(r.created)||Date.now()}));
+  (d.meals||[]).forEach(m=>{if(isDate(m.date))out.meals.push({id:id(m.id),type:m.type==='ing'?'ing':'recipe',refId:id(m.refId),date:m.date,time:/^\d{2}:\d{2}$/.test(m.time)?m.time:'',portions:n(m.portions)||1,qty:n(m.qty??m.g)||0,unit:UNITS[m.unit]?m.unit:'g'})});
   Object.entries(d.steps||{}).forEach(([k,v])=>{if(isDate(k)&&n(v))out.steps[k]=n(v)});
   Object.entries(d.symptoms||{}).forEach(([k,s])=>{if(isDate(k)&&s)out.symptoms[k]={pain:n(s.pain)||0,bloat:n(s.bloat)||0,stress:n(s.stress)||0,stool:n(s.stool)||0,note:String(s.note||'')}});
   Object.entries(d.wellbeing||{}).forEach(([k,w])=>{if(isDate(k)&&w){const o={note:String(w.note||'')};WB.forEach(([x])=>o[x]=n(w[x])??0);out.wellbeing[k]=o}});
