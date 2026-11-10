@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="BauchGut">
+<meta name="theme-color" content="#F2672E">
+<title>BauchGut</title>
+<link rel="apple-touch-icon" id="touchIcon" href="data:,">
+<link rel="icon" id="favIcon" href="data:,">
+<style>
+:root{--o:#F2672E;--r:#FF8F3F;--danger:#E2483D;--o2:#FFE4D6;--bg:#FFF7F2;--card:#fff;--t:#3B2A24;--m:#8A766E;--g:#3BA55D;--line:#F1E2D9;--input:#fff;--chip:#fff;--warnbg:#FFF3D6;--warnt:#7A5000;--infot:#8A3A14;--navbg:rgba(255,255,255,.97);--shadow:rgba(180,90,40,.08);--btn2t:#C4471A;--redbg:#FDE3E1;--missbg:#FFFAEB;--grab:#E6D3C8;color-scheme:light}
+:root[data-theme=light]{--bg:#FBF5F0;--card:rgba(255,255,255,.68);--t:#3A2A22;--m:#86746B;--o2:rgba(242,103,46,.13);--line:rgba(140,80,45,.13);--input:rgba(255,255,255,.8);--chip:rgba(255,255,255,.72);--warnbg:rgba(242,170,40,.16);--warnt:#7A5000;--infot:#8A3A14;--navbg:rgba(255,255,255,.72);--shadow:rgba(160,85,40,.10);--btn2t:#C9501E;--redbg:rgba(226,72,61,.10);--missbg:rgba(255,232,180,.55);--grab:rgba(60,30,20,.16);--cell:rgba(242,103,46,.08);--sheet:rgba(253,248,244,.95);--hdr:rgba(255,255,255,.55);--hdrb:1px solid rgba(255,255,255,.85)}
+:root[data-theme=light] body{background:#F8EFE8}
+:root[data-theme=light] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 40% at 88% 6%,rgba(242,103,46,.30),transparent 70%),radial-gradient(55% 35% at 0% 50%,rgba(255,150,70,.20),transparent 70%),radial-gradient(70% 40% at 75% 100%,rgba(242,103,46,.18),transparent 70%),linear-gradient(180deg,#FDF8F4,#F6ECE4)}
+:root[data-theme=light] .card{border:1px solid rgba(255,255,255,.85);box-shadow:0 6px 24px rgba(160,85,40,.10);-webkit-backdrop-filter:blur(22px) saturate(160%);backdrop-filter:blur(22px) saturate(160%)}
+:root[data-theme=light] header,:root[data-theme=light] nav,:root[data-theme=light] .sheet{-webkit-backdrop-filter:blur(24px) saturate(170%);backdrop-filter:blur(24px) saturate(170%)}
+:root[data-theme=light] header{color:var(--t);box-shadow:0 4px 18px rgba(160,85,40,.10)}
+:root[data-theme=light] header h1{background:linear-gradient(90deg,#F2672E,#FF9A4D);-webkit-background-clip:text;background-clip:text;color:transparent}
+:root[data-theme=light] header .sub{color:var(--m);opacity:1}
+:root[data-theme=light] #themeBtn{background:rgba(242,103,46,.12)}
+:root[data-theme=light] .btn:not(.sec):not(.red){box-shadow:0 4px 14px rgba(242,103,46,.32)}
+:root[data-theme=light] .chip.on{box-shadow:0 2px 10px rgba(242,103,46,.35)}
+:root[data-theme=light] nav{border-top:1px solid rgba(255,255,255,.9)}
+:root[data-theme=light] nav button.on .i{filter:drop-shadow(0 0 5px rgba(242,103,46,.5))}
+:root[data-theme=dark][data-ds=klassisch]{--bg:#1A1412;--card:#261D1A;--t:#F3E7E1;--m:#B09E96;--o2:#4A2A1E;--line:#3A2E2A;--input:#1F1816;--chip:#2E2420;--warnbg:#3D2F12;--warnt:#F3D58A;--infot:#FFC9AE;--navbg:rgba(30,23,21,.97);--shadow:rgba(0,0,0,.35);--btn2t:#FFB28E;--redbg:#4A1E1B;--missbg:#3A2F14;--grab:#4A3A34;color-scheme:dark}
+:root[data-theme=dark][data-ds=glas]{--bg:#2B2623;--card:rgba(255,255,255,.075);--t:#F7F0EB;--m:#C2B5AD;--o2:rgba(242,103,46,.22);--line:rgba(255,255,255,.11);--input:rgba(255,255,255,.07);--chip:rgba(255,255,255,.08);--warnbg:rgba(233,168,37,.17);--warnt:#F8DB9C;--infot:#FFD4BF;--navbg:rgba(43,38,35,.72);--shadow:rgba(0,0,0,.22);--btn2t:#FFB592;--redbg:rgba(226,72,61,.22);--missbg:rgba(233,168,37,.12);--grab:rgba(255,255,255,.22);--cell:rgba(255,255,255,.06);--sheet:rgba(52,46,42,.94);--hdr:rgba(255,255,255,.07);--hdrb:1px solid rgba(255,255,255,.12);color-scheme:dark}
+:root[data-ds=glas][data-theme=dark] body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(60% 40% at 85% 8%,rgba(242,103,46,.38),transparent 70%),radial-gradient(55% 35% at 5% 55%,rgba(226,72,61,.20),transparent 70%),radial-gradient(70% 40% at 70% 100%,rgba(242,140,60,.22),transparent 70%),linear-gradient(180deg,#332C28,#25211F)}
+:root[data-ds=glas][data-theme=dark] body{background:#25211F}
+:root[data-ds=glas][data-theme=dark] .card{border:1px solid rgba(255,255,255,.10);-webkit-backdrop-filter:blur(22px) saturate(140%);backdrop-filter:blur(22px) saturate(140%)}
+:root[data-ds=glas][data-theme=dark] header,:root[data-ds=glas][data-theme=dark] nav,:root[data-ds=glas][data-theme=dark] .sheet{-webkit-backdrop-filter:blur(24px) saturate(150%);backdrop-filter:blur(24px) saturate(150%)}
+:root[data-ds=glas][data-theme=dark] header h1{background:linear-gradient(90deg,#fff,#FFC7A8);-webkit-background-clip:text;background-clip:text;color:transparent}
+:root[data-ds=glas][data-theme=dark] .btn:not(.sec):not(.red){box-shadow:0 4px 16px rgba(242,103,46,.40)}
+:root[data-ds=glas][data-theme=dark] .chip.on{box-shadow:0 2px 12px rgba(242,103,46,.45)}
+:root[data-ds=glas][data-theme=dark] nav{border-top:1px solid rgba(255,255,255,.10)}
+:root[data-ds=glas][data-theme=dark] nav button.on .i{filter:drop-shadow(0 0 6px rgba(242,103,46,.7))}
+:root[data-theme=dark][data-ds=abendrot]{--o:#FF7A3D;--r:#FFA052;--bg:#302C3B;--card:#3D384B;--t:#FCF6FF;--m:#C8BFD7;--o2:rgba(255,138,91,.20);--line:#4E4863;--input:#363144;--chip:#46405A;--warnbg:rgba(255,200,87,.17);--warnt:#FFE09A;--infot:#FFD4C2;--navbg:rgba(54,49,68,.96);--shadow:rgba(10,5,20,.28);--btn2t:#FFBC9F;--redbg:rgba(226,72,61,.22);--missbg:rgba(255,200,87,.10);--grab:#5D5675;--cell:#363144;--sheet:#38334A;--hdr:linear-gradient(135deg,#F2672E,#FF9A4D);color-scheme:dark}
+:root[data-ds=abendrot][data-theme=dark] .card{border:1px solid rgba(255,255,255,.05)}
+:root[data-ds=abendrot][data-theme=dark] .chip.on{background:linear-gradient(135deg,#F2672E,#FF9A4D);border-color:transparent}
+#themeBtn{position:absolute;right:16px;top:calc(env(safe-area-inset-top) + 14px);border:0;background:rgba(255,255,255,.22);color:#fff;border-radius:12px;width:40px;height:40px;font-size:20px;cursor:pointer}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;background:var(--bg);color:var(--t);font-size:16px;line-height:1.35}
+header{position:sticky;top:0;z-index:5;background:var(--hdr,linear-gradient(135deg,var(--o),var(--r)));border-bottom:var(--hdrb,0);color:#fff;padding:calc(env(safe-area-inset-top) + 12px) 18px 14px;border-radius:0 0 22px 22px;box-shadow:0 4px 14px rgba(226,72,61,.25)}
+header h1{margin:0;font-size:24px;letter-spacing:-.3px}
+header .sub{opacity:.92;font-size:13px}
+main{padding:14px 14px calc(96px + env(safe-area-inset-bottom));max-width:720px;margin:0 auto}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--navbg);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:6}
+nav button{flex:1;border:0;background:none;padding:8px 0 6px;font-size:11px;color:var(--m);display:flex;flex-direction:column;align-items:center;gap:1px;font-family:inherit}
+nav button .i{font-size:22px;filter:grayscale(.7);opacity:.7}
+nav button.on{color:var(--o);font-weight:700}
+nav button.on .i{filter:none;opacity:1}
+.card{background:var(--card);border-radius:18px;padding:14px;margin-bottom:12px;box-shadow:0 2px 10px var(--shadow)}
+.card h2{font-size:17px;margin:0 0 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.card h2 .btn{white-space:nowrap;flex:none}
+.btn{border:0;border-radius:12px;padding:10px 14px;font-size:15px;font-weight:600;background:linear-gradient(135deg,var(--o),var(--r));color:#fff;font-family:inherit;cursor:pointer}
+.btn.sec{background:var(--o2);color:var(--btn2t)}
+.btn.red{background:var(--redbg);color:var(--danger)}
+.btn.sm{padding:6px 11px;font-size:13px}
+.btn.full{width:100%}
+input,select,textarea{width:100%;font:inherit;font-size:16px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--input);color:var(--t)}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--o);box-shadow:0 0 0 3px var(--o2)}
+input[type=range]{padding:0;border:0;accent-color:var(--o)}
+input[type=range]:focus{box-shadow:none}
+.miss{border-color:#E9A825;background:var(--missbg)}
+label{display:block;font-size:13px;color:var(--m);margin:12px 0 4px}
+.row{display:flex;gap:8px;align-items:center}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.muted{color:var(--m);font-size:13px}
+p{margin:0 0 8px}
+.warn{background:var(--warnbg);color:var(--warnt);border-radius:14px;padding:10px 12px;font-size:14px;margin-bottom:12px;cursor:pointer}
+.info{background:var(--o2);color:var(--infot);border-radius:14px;padding:10px 12px;font-size:14px;margin-bottom:12px}
+.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:99px;background:var(--o2);color:var(--btn2t);font-weight:600;margin:2px 2px 0 0}
+.badge.w{background:var(--warnbg);color:var(--warnt)}
+.list .it{display:flex;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.list .it:last-child{border:0}
+.thumb{width:52px;height:52px;border-radius:12px;object-fit:cover;background:var(--o2);display:flex;align-items:center;justify-content:center;font-size:24px;flex:none}
+.hero{width:100%;height:220px;object-fit:cover;display:block;background:var(--o2)}
+.nut{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.nut div{background:var(--cell,var(--bg));border-radius:10px;padding:8px 2px;text-align:center}
+.nut b{display:block;font-size:15px}
+.nut span{font-size:11px;color:var(--m)}
+.sheet-bg{position:fixed;inset:0;background:rgba(40,20,10,.42);z-index:20;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--sheet,var(--bg));width:100%;max-width:720px;max-height:92vh;overflow:auto;-webkit-overflow-scrolling:touch;border-radius:22px 22px 0 0;padding:10px 16px calc(24px + env(safe-area-inset-bottom))}
+.sheet h3{margin:4px 0 6px;font-size:20px}
+.grab{width:40px;height:5px;border-radius:9px;background:var(--grab);margin:0 auto 8px}
+.bar{height:10px;background:var(--o2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--o),var(--r));border-radius:99px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{padding:6px 10px;border-radius:99px;border:1px solid var(--line);background:var(--chip);font-size:13px;font-family:inherit;color:var(--t)}
+button.chip{cursor:pointer}
+.chip.on{background:var(--o);color:#fff;border-color:var(--o)}
+.chip a{color:var(--danger);margin-left:4px;cursor:pointer}
+.chart{position:relative;display:flex;align-items:flex-end;gap:4px;height:100px;margin-top:4px}
+.chart .col{flex:1;height:100%;display:flex;align-items:flex-end}
+.chart .col i{width:100%;display:block;background:linear-gradient(var(--o),var(--r));border-radius:5px 5px 2px 2px}
+.chart .goal{position:absolute;left:0;right:0;border-top:2px dashed var(--g);pointer-events:none}
+.lbls{display:flex;gap:4px;margin:3px 0 6px}
+.lbls span{flex:1;text-align:center;font-size:10px;color:var(--m)}
+.phasebar{display:flex;height:14px;border-radius:99px;overflow:hidden;margin:10px 0 4px;position:relative}
+.phasebar .marker{position:absolute;top:-3px;width:4px;height:20px;background:var(--t);border-radius:2px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(90px + env(safe-area-inset-bottom));background:#3B2A24;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;z-index:60;max-width:90%;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.2)}
+.daynav{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.daynav b{font-size:17px}
+.empty{text-align:center;padding:24px 10px;color:var(--m)}
+.empty .e{font-size:40px}
+</style>
+</head>
+<body>
+<header><button id="themeBtn" onclick="toggleTheme()" aria-label="Hell/Dunkel">🌙</button><h1 id="hTitle">BauchGut</h1><div class="sub" id="hSub"></div></header>
+<main id="main"></main>
+<nav id="nav">
+  <button data-t="heute"><span class="i">🏠</span>Heute</button>
+  <button data-t="rezepte"><span class="i">🍲</span>Rezepte</button>
+  <button data-t="zutaten"><span class="i">🥕</span>Zutaten</button>
+  <button data-t="koerper"><span class="i">💪</span>Körper</button>
+  <button data-t="mehr"><span class="i">⚙️</span>Mehr</button>
+</nav>
+<script>
+'use strict';
+/* ===== Grundlagen ===== */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+const num=v=>{v=String(v??'').trim().replace(',','.');if(v==='')return null;const n=parseFloat(v);return isNaN(n)?null:n};
+const f1=v=>(Math.round((v||0)*10)/10).toLocaleString('de-DE');
+const avg=a=>a.reduce((x,y)=>x+y,0)/a.length;
+const NUT=[['kcal','Kalorien','kcal','kcal'],['carbs','Kohlenhydrate','g','KH'],['sugar','davon Zucker','g','Zucker'],['fat','Fett','g','Fett'],['protein','Eiweiß','g','Eiweiß'],['fiber','Ballaststoffe','g','Ballastst.'],['salt','Salz','g','Salz']];
+const PH={mens:'Menstruation',foll:'Follikelphase',ovu:'Eisprung',lut:'Lutealphase'};
+const PH_ICON={mens:'🩸',foll:'🌱',ovu:'🌼',lut:'🍂'};
+const PH_COL={mens:'#E2483D',foll:'#F7A072',ovu:'#F2C14E',lut:'#C98B6B'};
+const FOD={'':'unbekannt',gruen:'🟢 gut verträglich',gelb:'🟡 nur kleine Mengen',rot:'🔴 eher meiden'};
+const WB=[['mood','Stimmung',1],['irrit','Reizbarkeit',0],['tired','Müdigkeit',0],['head','Kopfschmerzen',0],['sleep','Schlafqualität',1],['focus','Konzentration',1]];
+const RIDE={bike:'🚲 Fahrrad',ebike:'⚡ E-Bike'};
+const STOOL=['–','1 harte Kügelchen','2 klumpig-hart','3 rissig','4 glatt (ideal)','5 weiche Stücke','6 breiig','7 flüssig'];
+
+/* ===== Datum ===== */
+const iso=d=>{const x=new Date(d);return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')};
+const today=()=>iso(new Date());
+const parse=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)};
+const addDays=(s,n)=>{const d=parse(s);d.setDate(d.getDate()+n);return iso(d)};
+const diffDays=(a,b)=>Math.round((parse(b)-parse(a))/864e5);
+const weekStart=s=>{const d=parse(s);d.setDate(d.getDate()-((d.getDay()+6)%7));return iso(d)};
+const fmtDate=s=>parse(s).toLocaleDateString('de-DE',{weekday:'short',day:'numeric',month:'short'});
+const isDate=s=>/^\d{4}-\d{2}-\d{2}$/.test(s);
+
+/* ===== Speicher (nur lokal, IndexedDB) ===== */
+const KEYS=['ingredients','recipes','meals','steps','symptoms','wellbeing','periods','rides','profile','weights','meds','settings'];
+const DEFAULT_SETTINGS={stepGoal:8000,cycleLen:28,periodLen:5,plantGoal:30,lastBackup:null,cycleMode:'natural',pillSince:null,theme:'auto',darkStyle:'glas'};
+const emptyState=()=>({ingredients:[],recipes:[],meals:[],steps:{},symptoms:{},wellbeing:{},periods:[],rides:[],profile:{birth:null,height:null,activity:'alltag'},weights:[],meds:[],settings:{...DEFAULT_SETTINGS}});
+let S=emptyState();
+let db=null,persisted=false;
+function openDB(){return new Promise(res=>{try{const r=indexedDB.open('bauchgut',1);r.onupgradeneeded=()=>r.result.createObjectStore('kv');r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);r.onblocked=()=>res(null)}catch(e){res(null)}})}
+async function load(){db=await openDB();if(!db)return;
+  await Promise.all(KEYS.map(k=>new Promise(res=>{try{const q=db.transaction('kv').objectStore('kv').get(k);q.onsuccess=()=>{if(q.result!==undefined)S[k]=k==='settings'?{...DEFAULT_SETTINGS,...q.result}:q.result;res()};q.onerror=()=>res()}catch(e){res()}})))}
+function save(...keys){if(!db){return}try{const tx=db.transaction('kv','readwrite');const st=tx.objectStore('kv');keys.forEach(k=>st.put(S[k],k));tx.onerror=()=>toast('⚠️ Speichern fehlgeschlagen (Speicher voll?)')}catch(e){toast('⚠️ Speichern fehlgeschlagen')}}
+
+/* ===== Datenlogik ===== */
+const ing=id=>S.ingredients.find(i=>i.id===id);
+const rec=id=>S.recipes.find(r=>r.id===id);
+const zero=()=>Object.fromEntries(NUT.map(([k])=>[k,0]));
+const scale=(t,f)=>Object.fromEntries(NUT.map(([k])=>[k,(t[k]||0)*f]));
+const addTo=(a,b)=>NUT.forEach(([k])=>a[k]+=b[k]||0);
+const isNull=v=>v===null||v===undefined||v==='';
+function newIng(name){return{id:uid(),name,img:'',n:Object.fromEntries(NUT.map(([k])=>[k,null])),plant:null,fodmap:'',note:'',phases:[]}}
+function missingFields(i){const m=NUT.filter(([k])=>isNull(i.n[k])).map(x=>x[1]);if(i.plant!==true&&i.plant!==false)m.push('pflanzlich ja/nein');return m}
+const incomplete=i=>missingFields(i).length>0;
+function recipeTotals(r){const t=zero();(r.items||[]).forEach(it=>{const i=ing(it.ingId);if(!i)return;NUT.forEach(([k])=>{if(!isNull(i.n[k]))t[k]+=i.n[k]*it.g/100})});return t}
+const recipeIncomplete=r=>(r.items||[]).map(it=>ing(it.ingId)).filter(i=>i&&incomplete(i));
+const recipePlants=r=>[...new Set((r.items||[]).map(it=>ing(it.ingId)).filter(i=>i&&i.plant===true).map(i=>i.id))];
+const recipeGrams=r=>(r.items||[]).reduce((s,it)=>s+(it.g||0),0);
+function mealInfo(m){
+  if(m.type==='recipe'){const r=rec(m.refId);if(!r)return{name:'(gelöschtes Rezept)',img:'',t:zero(),plants:[],sub:'',inc:false};
+    return{name:r.title,img:r.img,t:scale(recipeTotals(r),(m.portions||1)/(r.portions||1)),plants:recipePlants(r),sub:f1(m.portions)+' Portion(en)',inc:recipeIncomplete(r).length>0}}
+  const i=ing(m.refId);if(!i)return{name:'(gelöschte Zutat)',img:'',t:zero(),plants:[],sub:'',inc:false};
+  const t=zero();NUT.forEach(([k])=>{if(!isNull(i.n[k]))t[k]=i.n[k]*m.g/100});
+  return{name:i.name,img:i.img,t,plants:i.plant===true?[i.id]:[],sub:f1(m.g)+' g',inc:incomplete(i)}}
+function weekPlants(d){const ws=weekStart(d),we=addDays(ws,6),set=new Set();S.meals.filter(m=>m.date>=ws&&m.date<=we).forEach(m=>mealInfo(m).plants.forEach(p=>set.add(p)));return[...set].map(ing).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name))}
+function cycleInfo(d){if(S.settings.cycleMode==='pill')return{pill:true};const ps=[...S.periods].sort();const past=ps.filter(p=>p<=d);if(!past.length)return null;const last=past[past.length-1];
+  let L=S.settings.cycleLen||28;const ds=[];for(let i=1;i<ps.length;i++){const x=diffDays(ps[i-1],ps[i]);if(x>=18&&x<=45)ds.push(x)}if(ds.length)L=Math.round(avg(ds.slice(-6)));
+  const day=diffDays(last,d)+1,ov=L-14,pl=S.settings.periodLen||5;let ph;
+  if(day<=pl)ph='mens';else if(Math.abs(day-ov)<=1)ph='ovu';else if(day<ov)ph='foll';else ph='lut';
+  return{day,L,ov,pl,ph,next:addDays(last,L),late:day>L}}
+const symScore=s=>s?((s.pain||0)+(s.bloat||0))/2:null;
+
+/* ===== UI-Helfer ===== */
+let st={tab:'heute',date:today(),view:null,q:'',q2:'',ingFilter:'all',wbM:'mood',nutM:'all',nutR:14};
+function toast(msg){document.querySelectorAll('.toast').forEach(x=>x.remove());const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+function openSheet(html){let bg=$('#sheetBg');if(!bg){bg=document.createElement('div');bg.id='sheetBg';bg.className='sheet-bg';bg.innerHTML='<div class="sheet" id="sheet"></div>';document.body.appendChild(bg)}$('#sheet').innerHTML='<div class="grab"></div>'+html;document.body.style.overflow='hidden'}
+function closeSheet(){const bg=$('#sheetBg');if(bg)bg.remove();document.body.style.overflow=''}
+function ask(msg,ok='OK'){return new Promise(res=>{const el=document.createElement('div');el.className='sheet-bg';el.style.cssText='z-index:40;align-items:center';
+  el.innerHTML=`<div class="sheet" style="border-radius:20px;margin:20px;max-width:420px;padding:18px"><p>${esc(msg)}</p><div class="row" style="margin-top:12px"><button class="btn sec" style="flex:1">Abbrechen</button><button class="btn" style="flex:1">${esc(ok)}</button></div></div>`;
+  const[c,o]=el.querySelectorAll('button');c.onclick=()=>{el.remove();res(false)};o.onclick=()=>{el.remove();res(true)};document.body.appendChild(el)})}
+const thumb=(img,e)=>img?`<img class="thumb" src="${esc(img)}" alt="">`:`<div class="thumb">${e}</div>`;
+function nutGrid(t){return `<div class="nut">${NUT.map(([k,,u,s])=>`<div><b>${k==='kcal'?Math.round(t[k]):f1(t[k])}</b><span>${s}${k==='kcal'?'':' ('+u+')'}</span></div>`).join('')}</div>`}
+function phaseChips(arr,cid,fn){return `<div class="chips" id="${cid}">${Object.keys(PH).map(p=>`<button type="button" class="chip ${arr.includes(p)?'on':''}" onclick="${fn}('${p}')">${PH_ICON[p]} ${PH[p]}</button>`).join('')}</div>`}
+function toggleIn(arr,v){const i=arr.indexOf(v);if(i>=0)arr.splice(i,1);else arr.push(v)}
+function imgPick(img,fn,e){return `<div class="row">${img?`<img class="thumb" style="width:76px;height:76px" src="${esc(img)}" alt="">`:`<div class="thumb" style="width:76px;height:76px">${e}</div>`}<button type="button" class="btn sec sm" onclick="${fn}(false)">${img?'Bild ändern':'📷 Bild hinzufügen'}</button>${img?`<button type="button" class="btn red sm" onclick="${fn}(true)">Entfernen</button>`:''}</div>`}
+const ING_IMG=400;
+function shrinkDataUrl(url,max){return new Promise(res=>{const img=new Image();img.onload=()=>{const sc=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));if(sc>=1)return res(url);
+  const c=document.createElement('canvas');c.width=Math.round(img.naturalWidth*sc);c.height=Math.round(img.naturalHeight*sc);c.getContext('2d').drawImage(img,0,0,c.width,c.height);const o=c.toDataURL('image/jpeg',.8);res(o.length<url.length?o:url)};img.onerror=()=>res(url);img.src=url})}
+async function shrinkOldIngImgs(){let ch=0;for(const i of S.ingredients){if(i.img&&i.img.length>70000){const o=await shrinkDataUrl(i.img,ING_IMG);if(o!==i.img){i.img=o;ch++}}}if(ch){save('ingredients');render()}}
+function pickImage(cb,max=900){const inp=document.createElement('input');inp.type='file';inp.accept='image/*';inp.onchange=()=>{const f=inp.files[0];if(!f)return;const url=URL.createObjectURL(f);const img=new Image();
+  img.onload=()=>{let w=img.naturalWidth,h=img.naturalHeight;const s=Math.min(1,max/Math.max(w,h));w=Math.round(w*s);h=Math.round(h*s);const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);URL.revokeObjectURL(url);cb(c.toDataURL('image/jpeg',.78))};
+  img.onerror=()=>{URL.revokeObjectURL(url);toast('Bild konnte nicht geladen werden')};img.src=url};inp.click()}
+function ring(v,max){const r=34,c=2*Math.PI*r,p=Math.min(1,v/max);return `<svg width="88" height="88" viewBox="0 0 84 84" style="flex:none"><defs><linearGradient id="gr" x1="0" x2="1"><stop offset="0" stop-color="#F2672E"/><stop offset="1" stop-color="#FF8F3F"/></linearGradient></defs><circle cx="42" cy="42" r="${r}" fill="none" style="stroke:var(--o2)" stroke-width="9"/><circle cx="42" cy="42" r="${r}" fill="none" stroke="${p>=1?'#3BA55D':'url(#gr)'}" stroke-width="9" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-p)}" transform="rotate(-90 42 42)"/><text x="42" y="42" text-anchor="middle" font-size="21" font-weight="700" style="fill:var(--t)">${v}</text><text x="42" y="57" text-anchor="middle" font-size="10" style="fill:var(--m)">von ${max}</text></svg>`}
+function barChart(items,max,goal){return `<div class="chart">${goal?`<div class="goal" style="bottom:${Math.min(100,goal/max*100)}%"></div>`:''}${items.map(x=>`<div class="col"><i style="height:${max&&x.v?Math.max(3,x.v/max*100):0}%"></i></div>`).join('')}</div><div class="lbls">${items.map(x=>`<span>${x.lbl}</span>`).join('')}</div>`}
+function suggestions(ph,n){const rs=S.recipes.filter(r=>(r.phases||[]).includes(ph)).slice(0,n);const is=S.ingredients.filter(i=>(i.phases||[]).includes(ph)).slice(0,n*2);
+  if(!rs.length&&!is.length)return `<div class="muted">Markiere Rezepte oder Zutaten, die dir in der ${PH[ph]} guttun – dann erscheinen sie hier als Vorschläge.</div>`;
+  return `${rs.length?`<div class="list">${rs.map(r=>`<div class="it" onclick="openRecipe('${r.id}')">${thumb(r.img,'🍲')}<div style="flex:1"><b>${esc(r.title)}</b><div class="muted">${Math.round(recipeTotals(r).kcal/(r.portions||1))} kcal/Portion</div></div></div>`).join('')}</div>`:''}${is.length?`<div class="chips" style="margin-top:8px">${is.map(i=>`<span class="chip">${esc(i.name)}</span>`).join('')}</div>`:''}`}
+
+/* ===== Navigation ===== */
+document.querySelectorAll('#nav button').forEach(b=>b.onclick=()=>{st.tab=b.dataset.t;st.view=null;if(st.tab==='heute')st.date=today();render();scrollTo(0,0)});
+function render(){document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.t===st.tab));
+  const V={heute:vHeute,rezepte:vRezepte,zutaten:vZutaten,koerper:vKoerper,mehr:vMehr};
+  const T={heute:['BauchGut',fmtDate(st.date)],rezepte:['Rezepte',S.recipes.length+' gespeichert'],zutaten:['Zutaten',S.ingredients.length+' Lebensmittel'],koerper:['Körper','Daten · Ernährung · Bewegung · Zyklus'],mehr:['Mehr','Backup & Datenschutz']}[st.tab];
+  $('#hTitle').textContent=T[0];$('#hSub').textContent=T[1];
+  $('#main').innerHTML=(st.view&&st.view.type==='recipe')?vRecipe(st.view.id):V[st.tab]()}
+function shiftDay(n){st.date=addDays(st.date,n);render()}
+function back(){st.view=null;render()}
+function goMissing(){st.tab='zutaten';st.view=null;st.ingFilter='missing';render()}
+function openRecipe(id){st.tab='rezepte';st.view={type:'recipe',id};render();scrollTo(0,0)}
+
+/* ===== Heute ===== */
+function vHeute(){const d=st.date,meals=S.meals.filter(m=>m.date===d).sort((a,b)=>(a.time||'').localeCompare(b.time||''));
+  const sum=zero();let inc=false;meals.forEach(m=>{const i=mealInfo(m);addTo(sum,i.t);if(i.inc)inc=true});
+  const plants=weekPlants(d),goal=S.settings.plantGoal||30,missing=S.ingredients.filter(incomplete);
+  const steps=S.steps[d]||0,sg=S.settings.stepGoal||8000,sy=S.symptoms[d],cy=cycleInfo(d);
+  const hasData=S.recipes.length||S.meals.length,lb=S.settings.lastBackup;
+  const needBackup=(hasData||S.rides.length)&&(!lb||diffDays(lb.slice(0,10),today())>=14);
+  return `
+<div class="daynav"><button class="btn sec sm" onclick="shiftDay(-1)">‹</button><b>${d===today()?'Heute':fmtDate(d)}</b><button class="btn sec sm" onclick="shiftDay(1)">›</button></div>
+${!S.ingredients.length&&!S.recipes.length?`<div class="info">👋 Willkommen! Leg unter <b>Rezepte</b> dein erstes Rezept an. Zutaten, die noch unbekannt sind, erkennt die App automatisch und fragt dich nach den Nährwerten.</div>`:''}
+${missing.length?`<div class="warn" onclick="goMissing()">⚠️ Bei <b>${missing.length}</b> Zutat${missing.length>1?'en':''} fehlen noch Daten – tippen zum Ergänzen</div>`:''}
+${needBackup?`<div class="warn" onclick="st.tab='mehr';render()">💾 ${lb?'Dein letztes Backup ist über 2 Wochen alt.':'Du hast noch kein Backup.'} Tippen zum Sichern.</div>`:''}
+<div class="card"><h2>🌿 Pflanzenvielfalt <span class="muted">ab ${fmtDate(weekStart(d))}</span></h2>
+<div class="row" style="align-items:flex-start">${ring(plants.length,goal)}<div style="flex:1">
+<div class="muted" style="margin-bottom:6px">${plants.length>=goal?'Ziel erreicht – super! 🎉':`Noch ${goal-plants.length} verschiedene Pflanzen diese Woche`}</div>
+<div class="chips">${plants.map(p=>`<span class="chip">${esc(p.name)}</span>`).join('')}</div></div></div></div>
+<div class="card"><h2>🍽️ Gegessen <button class="btn sm" onclick="openMeal()">+ Eintragen</button></h2>
+<div class="list">${meals.map(m=>{const i=mealInfo(m);return `<div class="it">${thumb(i.img,'🍲')}<div style="flex:1;min-width:0"><b>${esc(i.name)}</b><div class="muted">${m.time?esc(m.time)+' · ':''}${i.sub} · ${Math.round(i.t.kcal)} kcal${i.inc?' · <span class="badge w">unvollständig</span>':''}</div></div><button class="btn red sm" onclick="delMeal('${m.id}')">✕</button></div>`}).join('')||'<div class="muted">Noch nichts eingetragen.</div>'}</div>
+${meals.length?`<label>Summe des Tages${inc?' (unvollständig)':''}</label>${nutGrid(sum)}`:''}${(()=>{const P=bodyInfo().prot;if(!P)return'';return `<div class="row" style="justify-content:space-between;margin-top:12px"><span class="muted">💪 Eiweiß heute</span><b>${f1(sum.protein)} / ${P.g} g</b></div><div class="bar" style="margin-top:6px"><i style="width:${Math.min(100,sum.protein/P.g*100)}%;${sum.protein>=P.g?'background:#3BA55D':''}"></i></div>`})()}</div>
+<div class="card"><h2>👟 Schritte</h2><div class="row"><input type="number" inputmode="numeric" value="${steps||''}" placeholder="0" onchange="setSteps('${d}',this.value)"><span class="muted" style="white-space:nowrap">Ziel ${sg.toLocaleString('de-DE')}</span></div><div class="bar" style="margin-top:10px"><i style="width:${Math.min(100,steps/sg*100)}%"></i></div></div>
+<div class="card"><h2>💛 Bauchgefühl <button class="btn sec sm" onclick="openSym('${d}')">${sy?'Bearbeiten':'+ Eintragen'}</button></h2>${sy?symSummary(sy):'<div class="muted">Wie geht es deinem Bauch heute?</div>'}</div>
+<div class="card"><h2>🙂 Befinden <button class="btn sec sm" onclick="openWB('${d}')">${S.wellbeing[d]?'Bearbeiten':'+ Eintragen'}</button></h2>${S.wellbeing[d]?wbSummary(S.wellbeing[d]):'<div class="muted">Stimmung, Reizbarkeit, Müdigkeit …</div>'}</div>
+<div class="card"><h2>🚲 Fahrrad <button class="btn sec sm" onclick="openRide()">+ Fahrt</button></h2>${ridesHtml(S.rides.filter(r=>r.date===d))||'<div class="muted">Keine Fahrt an diesem Tag.</div>'}</div>
+<div class="card"><h2>💊 Medikamente <button class="btn sec sm" onclick="openMed()">+ Einnahme</button></h2>${medsHtml(S.meds.filter(m=>m.date===d))||'<div class="muted">Keine Medikamente an diesem Tag.</div>'}</div>
+${cy&&!cy.pill?`<div class="card"><h2>${PH_ICON[cy.ph]} ${PH[cy.ph]} <span class="muted">Zyklustag ${cy.day}</span></h2>${suggestions(cy.ph,3)}</div>`:''}`}
+function symSummary(s){return `<div class="chips"><span class="chip">Schmerzen ${s.pain}/10</span><span class="chip">Blähungen ${s.bloat}/10</span><span class="chip">Stress ${s.stress}/10</span>${s.stool?`<span class="chip">Stuhl Typ ${s.stool}</span>`:''}</div>${s.note?`<div class="muted" style="margin-top:6px">${esc(s.note)}</div>`:''}`}
+function setSteps(d,v){const n=Math.max(0,Math.round(num(v)||0));if(n)S.steps[d]=n;else delete S.steps[d];save('steps');render()}
+async function delMeal(id){if(!await ask('Diesen Eintrag löschen?','Löschen'))return;S.meals=S.meals.filter(m=>m.id!==id);save('meals');render()}
+
+/* ===== Mahlzeit eintragen ===== */
+let M=null;
+function openMeal(pre){M={type:pre?.type||'recipe',refId:pre?.refId||'',portions:1,g:100,date:st.tab==='heute'?st.date:today(),time:new Date().toTimeString().slice(0,5)};renderMeal()}
+function renderMeal(){const rs=[...S.recipes].sort((a,b)=>a.title.localeCompare(b.title)),is=[...S.ingredients].sort((a,b)=>a.name.localeCompare(b.name));
+openSheet(`<h3>Mahlzeit eintragen</h3>
+<div class="chips"><button class="chip ${M.type==='recipe'?'on':''}" onclick="M.type='recipe';M.refId='';renderMeal()">🍲 Rezept</button><button class="chip ${M.type==='ing'?'on':''}" onclick="M.type='ing';M.refId='';renderMeal()">🥕 Einzelnes Lebensmittel</button></div>
+${M.type==='recipe'?(rs.length?`<label>Rezept</label><select onchange="M.refId=this.value"><option value="">– auswählen –</option>${rs.map(r=>`<option value="${r.id}" ${r.id===M.refId?'selected':''}>${esc(r.title)}</option>`).join('')}</select>
+<label>Portionen gegessen</label><input type="text" inputmode="decimal" value="${f1(M.portions)}" oninput="M.portions=num(this.value)">`:'<p class="muted" style="margin-top:10px">Noch keine Rezepte vorhanden.</p>')
+:(is.length?`<label>Lebensmittel</label><select onchange="M.refId=this.value"><option value="">– auswählen –</option>${is.map(i=>`<option value="${i.id}" ${i.id===M.refId?'selected':''}>${esc(i.name)}</option>`).join('')}</select>
+<label>Menge (g)</label><input type="text" inputmode="decimal" value="${M.g}" oninput="M.g=num(this.value)">`:'<p class="muted" style="margin-top:10px">Noch keine Zutaten vorhanden.</p>')}
+<div class="grid2"><div><label>Datum</label><input type="date" value="${M.date}" onchange="M.date=this.value"></div><div><label>Uhrzeit</label><input type="time" value="${M.time}" onchange="M.time=this.value"></div></div>
+<div class="row" style="margin-top:16px"><button class="btn sec" onclick="closeSheet()">Abbrechen</button><button class="btn" style="flex:1" onclick="saveMeal()">Speichern</button></div>`)}
+function saveMeal(){if(!M.refId)return toast('Bitte etwas auswählen');if(!isDate(M.date))return toast('Bitte ein Datum wählen');
+  const m={id:uid(),type:M.type,refId:M.refId,date:M.date,time:M.time||''};
+  if(M.type==='recipe'){if(!(M.portions>0))return toast('Bitte Portionen angeben');m.portions=M.portions}else{if(!(M.g>0))return toast('Bitte Menge angeben');m.g=M.g}
+  S.meals.push(m);save('meals');closeSheet();if(st.tab==='heute')st.date=m.date;render();
+  toast(mealInfo(m).inc?'Gespeichert – Nährwerte noch unvollständig':'Gespeichert ✓')}
+
+/* ===== Bauchgefühl ===== */
+let Y=null;
+function openSym(d){Y={pain:0,bloat:0,stress:0,stool:0,note:'',...(S.symptoms[d]||{}),_d:d};renderSym()}
+const slider=(k,l)=>`<label>${l}: <b id="v_${k}">${Y[k]}</b>/10</label><input type="range" min="0" max="10" value="${Y[k]}" oninput="Y.${k}=+this.value;$('#v_${k}').textContent=this.value">`;
+function renderSym(){openSheet(`<h3>Bauchgefühl · ${fmtDate(Y._d)}</h3>
+${slider('pain','Bauchschmerzen / Krämpfe')}${slider('bloat','Blähungen / Völlegefühl')}${slider('stress','Stress')}
+<label>Stuhlgang (Bristol-Skala)</label><div class="chips" id="stoolC">${stoolChips()}</div>
+<label>Notiz</label><textarea rows="3" oninput="Y.note=this.value" placeholder="z. B. Sodbrennen nach dem Abendessen">${esc(Y.note)}</textarea>
+<div class="row" style="margin-top:16px">${S.symptoms[Y._d]?'<button class="btn red" onclick="delSym()">Löschen</button>':''}<button class="btn sec" onclick="closeSheet()">Abbrechen</button><button class="btn" style="flex:1" onclick="saveSym()">Speichern</button></div>`)}
+function stoolChips(){return STOOL.map((s,i)=>`<button type="button" class="chip ${Y.stool===i?'on':''}" onclick="Y.stool=${i};$('#stoolC').innerHTML=stoolChips()">${s}</button>`).join('')}
+function saveSym(){const{_d,...s}=Y;S.symptoms[_d]=s;save('symptoms');closeSheet();render();toast('Gespeichert ✓')}
+function delSym(){delete S.symptoms[Y._d];save('symptoms');closeSheet();render()}
+
+/* ===== Befinden ===== */
+let W=null;
+function wbSummary(w){return `<div class="chips">${WB.map(([k,l])=>`<span class="chip">${l} ${w[k]}/10</span>`).join('')}</div>${w.note?`<div class="muted" style="margin-top:6px">${esc(w.note)}</div>`:''}`}
+function openWB(d){W={...Object.fromEntries(WB.map(([k,,good])=>[k,good?5:0])),note:'',...(S.wellbeing[d]||{}),_d:d};
+openSheet(`<h3>Befinden · ${fmtDate(d)}</h3>${WB.map(([k,l,good])=>`<label>${l}: <b id="w_${k}">${W[k]}</b>/10 <span style="font-weight:400">${good?'(10 = sehr gut)':'(0 = gar nicht)'}</span></label><input type="range" min="0" max="10" value="${W[k]}" oninput="W.${k}=+this.value;$('#w_${k}').textContent=this.value">`).join('')}
+<label>📝 Eigene Notiz – beschreib, wie es dir geht</label><textarea rows="5" oninput="W.note=this.value" placeholder="z. B. seit dem Mittag sehr gereizt, nachmittags Leistungstief, schlecht geschlafen wegen Prüfungsstress …">${esc(W.note)}</textarea>
+<div class="row" style="margin-top:16px">${S.wellbeing[d]?'<button class="btn red" onclick="delWB()">Löschen</button>':''}<button class="btn sec" onclick="closeSheet()">Abbrechen</button><button class="btn" style="flex:1" onclick="saveWB()">Speichern</button></div>`)}
+function saveWB(){const{_d,...w}=W;S.wellbeing[_d]=w;save('wellbeing');closeSheet();render();toast('Gespeichert ✓')}
+function delWB(){delete S.wellbeing[W._d];save('wellbeing');closeSheet();render()}
+
+/* ===== Medikamente ===== */
+let MD=null;
+const medNames=()=>{const c={};S.meds.forEach(m=>{const k=m.name.trim();c[k]=(c[k]||0)+1});return Object.entries(c).sort((a,b)=>b[1]-a[1]).map(x=>x[0])};
+function medsHtml(list){if(!list.length)return'';return `<div class="list">${[...list].sort((a,b)=>(a.time||'').localeCompare(b.time||'')).map(m=>`<div class="it" onclick="openMed('${m.id}')"><div class="thumb">💊</div><div style="flex:1;min-width:0"><b>${esc(m.name)}</b>${m.dose?` <span class="muted">${esc(m.dose)}</span>`:''}<div class="muted">${m.time?esc(m.time)+' Uhr':''}${m.reason?(m.time?' · ':'')+esc(m.reason):''}</div>${m.effect?`<div class="muted" style="margin-top:2px">⚠️ ${esc(m.effect)}</div>`:''}</div></div>`).join('')}</div>`}
+function openMed(id){const m=id?S.meds.find(x=>x.id===id):null;MD=m?{...m}:{id:null,date:st.tab==='heute'?st.date:today(),time:new Date().toTimeString().slice(0,5),name:'',dose:'',reason:'',effect:''};renderMed()}
+function renderMed(){const known=medNames().slice(0,8);openSheet(`<h3>${MD.id?'Einnahme bearbeiten':'Medikament eintragen'}</h3>
+${!MD.id&&known.length?`<label>Schnellauswahl</label><div class="chips">${known.map(n=>`<button type="button" class="chip" onclick="fillMed(this.dataset.n)" data-n="${esc(n)}">💊 ${esc(n)}</button>`).join('')}</div>`:''}
+<label>Medikament</label><input id="mdName" list="medNames" value="${esc(MD.name)}" oninput="MD.name=this.value" placeholder="z. B. Ibuprofen">
+<datalist id="medNames">${medNames().map(n=>`<option value="${esc(n)}">`).join('')}</datalist>
+<div class="grid2"><div><label>Dosis</label><input id="mdDose" value="${esc(MD.dose)}" oninput="MD.dose=this.value" placeholder="z. B. 400 mg"></div><div><label>Uhrzeit</label><input type="time" value="${MD.time}" onchange="MD.time=this.value"></div></div>
+<label>Grund</label><input id="mdReason" value="${esc(MD.reason)}" oninput="MD.reason=this.value" placeholder="z. B. Kopfschmerzen">
+<label>Bemerkte Wirkung / Nebenwirkung</label><textarea rows="3" oninput="MD.effect=this.value" placeholder="z. B. 2 Std. später Magendrücken">${esc(MD.effect)}</textarea>
+<label>Datum</label><input type="date" value="${MD.date}" onchange="MD.date=this.value">
+<div class="row" style="margin-top:16px">${MD.id?'<button class="btn red" onclick="delMed()">🗑</button>':''}<button class="btn sec" onclick="closeSheet()">Abbrechen</button><button class="btn" style="flex:1" onclick="saveMed()">Speichern</button></div>`)}
+function fillMed(n){const last=[...S.meds].reverse().find(m=>m.name.trim()===n);MD.name=n;MD.dose=last?.dose||'';MD.reason=last?.reason||'';$('#mdName').value=MD.name;$('#mdDose').value=MD.dose;$('#mdReason').value=MD.reason}
+function saveMed(){const name=(MD.name||'').trim();if(!name)return toast('Bitte Medikament angeben');if(!isDate(MD.date))return toast('Bitte Datum wählen');
+  const ex=medNames().find(n=>n.toLowerCase()===name.toLowerCase());
+  const m={id:MD.id||uid(),date:MD.date,time:MD.time||'',name:ex||name,dose:(MD.dose||'').trim(),reason:(MD.reason||'').trim(),effect:(MD.effect||'').trim()};
+  const i=S.meds.findIndex(x=>x.id===m.id);if(i>=0)S.meds[i]=m;else S.meds.push(m);save('meds');closeSheet();render();toast('Gespeichert ✓')}
+async function delMed(){if(!await ask('Diese Einnahme löschen?','Löschen'))return;S.meds=S.meds.filter(x=>x.id!==MD.id);save('meds');closeSheet();render()}
+function medAnalysis(){const names=medNames();if(!names.length)return'';
+  const metrics=[['bauch','Bauchbeschwerden',0,d=>symScore(S.symptoms[d])],...WB.map(([k,l,good])=>[k,l,good,d=>S.wellbeing[d]?S.wellbeing[d][k]:null])];
+  const allDays=[...new Set([...Object.keys(S.symptoms),...Object.keys(S.wellbeing)])];
+  const rows=names.map(n=>{const taken=[...new Set(S.meds.filter(m=>m.name===n).map(m=>m.date))].sort();const win=new Set(taken.flatMap(d=>[d,addDays(d,1)]));
+    const effects=S.meds.filter(m=>m.name===n&&m.effect).slice(-3).reverse();
+    let res=[];metrics.forEach(([k,l,good,get])=>{const a=[...win].map(get).filter(v=>v!==null&&v!==undefined),b=allDays.filter(d=>!win.has(d)).map(get).filter(v=>v!==null&&v!==undefined);
+      if(a.length>=3&&b.length>=5){const ma=avg(a),mb=avg(b),worse=good?mb-ma:ma-mb;res.push({l,ma,mb,worse})}});
+    res.sort((x,y)=>y.worse-x.worse);const flagged=res.filter(r=>r.worse>=1.5);
+    return `<div style="padding:10px 0;border-bottom:1px solid var(--line)"><div class="row" style="justify-content:space-between"><b>💊 ${esc(n)}</b><span class="muted">${taken.length}× · zuletzt ${fmtDate(taken[taken.length-1])}</span></div>
+${res.length?(flagged.length?flagged.map(r=>`<div class="warn" style="margin:6px 0 0;cursor:default">⚠️ <b>${esc(r.l)}</b> an Einnahmetagen/am Tag danach Ø ${f1(r.ma)} statt Ø ${f1(r.mb)}</div>`).join(''):`<div class="muted" style="margin-top:4px">🟢 Keine auffälligen Unterschiede bei Bauch & Befinden.</div>`)
++`<details style="margin-top:6px"><summary class="muted" style="cursor:pointer">Alle Werte</summary>${res.map(r=>`<div class="muted">${esc(r.l)}: Ø ${f1(r.ma)} mit · Ø ${f1(r.mb)} ohne</div>`).join('')}</details>`
+:`<div class="muted" style="margin-top:4px">Für eine Auswertung braucht es mindestens 3 Einnahmetage und 5 Tage ohne Einnahme mit Bauchgefühl- oder Befinden-Einträgen.</div>`}
+${effects.length?`<div class="muted" style="margin-top:6px">Notierte Nebenwirkungen: ${effects.map(e=>esc(e.effect)).join(' · ')}</div>`:''}</div>`});
+  return `<div class="card"><h2>💊 Medikamente & Nebenwirkungen <button class="btn sec sm" onclick="openMed()">+ Einnahme</button></h2>${rows.join('')}
+<div class="muted" style="margin-top:10px">Verglichen werden Einnahmetag + Folgetag mit allen übrigen Tagen. Das zeigt nur Zusammenhänge, keinen Beweis – andere Ursachen (Essen, Stress, Zyklus) sind möglich. Verdacht auf Nebenwirkungen bitte mit Ärztin/Arzt oder Apotheke besprechen und Medikamente nicht eigenmächtig absetzen.</div></div>`}
+
+/* ===== Fahrrad ===== */
+let B=null;
+const fmtMin=m=>{m=Math.round(m||0);const h=Math.floor(m/60),r=m%60;return h?`${h} h${r?' '+r+' min':''}`:`${r} min`};
+const speed=r=>r.min>0?f1(r.km/(r.min/60))+' km/h':'';
+function ridesHtml(list){if(!list.length)return'';return `<div class="list">${list.map(r=>`<div class="it" onclick="openRide('${r.id}')"><div class="thumb">${r.type==='ebike'?'⚡':'🚲'}</div><div style="flex:1;min-width:0"><b>${f1(r.km)} km · ${fmtMin(r.min)}</b><div class="muted">${RIDE[r.type]}${r.min?' · Ø '+speed(r):''}${r.note?' · '+esc(r.note):''}</div></div></div>`).join('')}</div>`}
+function openRide(id){const r=id?S.rides.find(x=>x.id===id):null;B=r?{...r,h:Math.floor((r.min||0)/60),m:Math.round(r.min||0)%60}:{id:null,date:st.tab==='heute'?st.date:today(),km:null,h:0,m:30,type:S.rides.length?S.rides[S.rides.length-1].type:'bike',note:''};renderRide()}
+function renderRide(){openSheet(`<h3>${B.id?'Fahrt bearbeiten':'Fahrradfahrt eintragen'}</h3>
+<label>Art</label><div class="chips" id="rType">${rideTypeChips()}</div>
+<label>Strecke (km)</label><input type="text" inputmode="decimal" placeholder="z. B. 12,5" value="${B.km===null?'':String(B.km).replace('.',',')}" oninput="B.km=num(this.value)">
+<label>Dauer</label><div class="row"><input type="number" inputmode="numeric" min="0" value="${B.h}" oninput="B.h=Math.max(0,+this.value||0)" style="flex:1"><span class="muted">Std.</span><input type="number" inputmode="numeric" min="0" max="59" value="${B.m}" oninput="B.m=Math.max(0,+this.value||0)" style="flex:1"><span class="muted">Min.</span></div>
+<label>Datum</label><input type="date" value="${B.date}" onchange="B.date=this.value">
+<label>Notiz</label><input value="${esc(B.note)}" oninput="B.note=this.value" placeholder="z. B. zur Hochschule">
+<div class="row" style="margin-top:16px">${B.id?'<button class="btn red" onclick="delRide()">🗑</button>':''}<button class="btn sec" onclick="closeSheet()">Abbrechen</button><button class="btn" style="flex:1" onclick="saveRide()">Speichern</button></div>`)}
+function rideTypeChips(){return Object.entries(RIDE).map(([k,l])=>`<button type="button" class="chip ${B.type===k?'on':''}" onclick="B.type='${k}';$('#rType').innerHTML=rideTypeChips()">${l}</button>`).join('')}
+function saveRide(){if(!(B.km>0))return toast('Bitte Kilometer angeben');if(!isDate(B.date))return toast('Bitte Datum wählen');const min=B.h*60+B.m;if(!(min>0))return toast('Bitte Dauer angeben');
+  const r={id:B.id||uid(),date:B.date,km:B.km,min,type:B.type,note:(B.note||'').trim()};const i=S.rides.findIndex(x=>x.id===r.id);if(i>=0)S.rides[i]=r;else S.rides.push(r);
+  save('rides');closeSheet();render();toast(`${f1(r.km)} km gespeichert ✓`)}
+async function delRide(){if(!await ask('Diese Fahrt löschen?','Löschen'))return;S.rides=S.rides.filter(x=>x.id!==B.id);save('rides');closeSheet();render()}
+function rideStats(d,days){const ws=weekStart(d),wk=S.rides.filter(r=>r.date>=ws&&r.date<=d);
+  const sum=(l,t)=>{const x=l.filter(r=>!t||r.type===t);return{n:x.length,km:x.reduce((s,r)=>s+r.km,0),min:x.reduce((s,r)=>s+r.min,0)}};
+  const a=sum(wk),b=sum(wk,'bike'),e=sum(wk,'ebike');const kmDay=days.map(x=>({lbl:parse(x).getDate(),v:S.rides.filter(r=>r.date===x).reduce((s,r)=>s+r.km,0)}));const mx=Math.max(1,...kmDay.map(x=>x.v));
+  return `<div class="card"><h2>🚲 Fahrrad <button class="btn sec sm" onclick="openRide()">+ Fahrt</button></h2>
+<div class="nut" style="grid-template-columns:repeat(3,1fr)"><div><b>${f1(a.km)}</b><span>km diese Woche</span></div><div><b>${fmtMin(a.min)}</b><span>Fahrzeit</span></div><div><b>${a.n}</b><span>Fahrten</span></div></div>
+<div class="muted" style="margin:8px 0">🚲 Fahrrad: ${f1(b.km)} km · ${fmtMin(b.min)} &nbsp;|&nbsp; ⚡ E-Bike: ${f1(e.km)} km · ${fmtMin(e.min)}</div>
+${S.rides.length?barChart(kmDay,mx)+'<div class="muted">km pro Tag, letzte 14 Tage</div>':''}
+${S.rides.length?`<label>Letzte Fahrten</label>${ridesHtml([...S.rides].sort((x,y)=>y.date.localeCompare(x.date)).slice(0,5).map(r=>({...r,note:fmtDate(r.date)+(r.note?' · '+r.note:'')})))}`:''}</div>`}
+
+/* ===== Dark Mode ===== */
+const darkNow=()=>S.settings.theme==='dark'||(S.settings.theme!=='light'&&matchMedia('(prefers-color-scheme: dark)').matches);
+const DS={glas:['✨ Glas','#2B2623'],abendrot:['🌆 Abendrot','#302C3B'],klassisch:['Klassisch','#1A1412']};
+function applyTheme(){const r=document.documentElement,dk=darkNow(),ds=DS[S.settings.darkStyle]?S.settings.darkStyle:'glas';r.dataset.theme=dk?'dark':'light';r.dataset.ds=ds;
+  const b=$('#themeBtn');if(b)b.textContent=dk?'☀️':'🌙';document.querySelector('meta[name=theme-color]').content=dk?DS[ds][1]:'#FBF5F0'}
+function setDarkStyle(k){S.settings.darkStyle=k;if(!darkNow())S.settings.theme='dark';save('settings');applyTheme();render()}
+function setTheme(t){S.settings.theme=t;save('settings');applyTheme();render()}
+function toggleTheme(){setTheme(darkNow()?'light':'dark')}
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',applyTheme)}catch(e){}
+
+/* ===== Rezepte ===== */
+function recipeList(){const q=st.q.trim().toLowerCase();const rs=S.recipes.filter(r=>!q||r.title.toLowerCase().includes(q)||(r.items||[]).some(it=>(ing(it.ingId)?.name||'').toLowerCase().includes(q))).sort((a,b)=>a.title.localeCompare(b.title));
+  if(!rs.length)return S.recipes.length?'<div class="muted">Nichts gefunden.</div>':'<div class="empty"><div class="e">🍲</div>Noch keine Rezepte.<br>Leg oben dein erstes an!</div>';
+  return rs.map(r=>{const t=recipeTotals(r),inc=recipeIncomplete(r).length;return `<div class="it" onclick="openRecipe('${r.id}')">${thumb(r.img,'🍲')}<div style="flex:1;min-width:0"><b>${esc(r.title)}</b><div class="muted">${Math.round(t.kcal/(r.portions||1))} kcal · ${f1(t.protein/(r.portions||1))} g Eiweiß pro Portion · 🌿 ${recipePlants(r).length}</div>${inc?`<span class="badge w">⚠️ ${inc} Zutat${inc>1?'en':''} unvollständig</span>`:''}</div></div>`}).join('')}
+function vRezepte(){return `<div class="row" style="margin-bottom:12px"><input placeholder="🔍 Rezept oder Zutat suchen" value="${esc(st.q)}" oninput="st.q=this.value;$('#rlist').innerHTML=recipeList()"><button class="btn" style="white-space:nowrap" onclick="openRecipeEditor()">+ Neu</button></div><div class="card list" id="rlist">${recipeList()}</div>`}
+function vRecipe(id){const r=rec(id);if(!r){st.view=null;return vRezepte()}
+  const t=recipeTotals(r),inc=recipeIncomplete(r),pl=recipePlants(r),per=scale(t,1/(r.portions||1));
+  return `<button class="btn sec sm" onclick="back()" style="margin-bottom:10px">‹ Zurück</button>
+<div class="card" style="padding:0;overflow:hidden">${r.img?`<img class="hero" src="${esc(r.img)}" alt="">`:''}<div style="padding:14px"><h2 style="margin:0 0 4px;font-size:21px">${esc(r.title)}</h2><div class="muted">${f1(r.portions)} Portion${r.portions==1?'':'en'} · ${f1(recipeGrams(r))} g gesamt · 🌿 ${pl.length} Pflanze${pl.length==1?'':'n'}</div>${(r.phases||[]).map(p=>`<span class="badge">${PH_ICON[p]} ${PH[p]}</span>`).join('')}</div></div>
+${inc.length?`<div class="warn">⚠️ Bei ${inc.length} Zutat${inc.length>1?'en':''} fehlen Daten (${inc.map(i=>esc(i.name)).join(', ')}). Die Nährwerte unten sind deshalb unvollständig.<div style="margin-top:8px"><button class="btn sm" onclick="event.stopPropagation();fillMissing('${r.id}')">Jetzt ergänzen</button></div></div>`:''}
+<div class="card"><h2>Pro Portion</h2>${nutGrid(per)}<h2 style="margin-top:14px">Ganzes Rezept</h2>${nutGrid(t)}</div>
+<div class="card"><h2>Zutaten</h2><div class="list">${(r.items||[]).map(it=>{const i=ing(it.ingId);if(!i)return'';return `<div class="it" onclick="openIngEditor('${i.id}')">${thumb(i.img,'🥕')}<div style="flex:1;min-width:0"><b>${esc(i.name)}</b> ${i.plant?'🌿':''}<div class="muted">${f1(it.g)} g ${incomplete(i)?'<span class="badge w">Daten fehlen</span>':''}</div></div><span class="muted">${isNull(i.n.kcal)?'':Math.round(i.n.kcal*it.g/100)+' kcal'}</span></div>`}).join('')}</div></div>
+${r.steps?`<div class="card"><h2>Zubereitung</h2><div style="white-space:pre-wrap">${esc(r.steps)}</div></div>`:''}
+${r.note?`<div class="card"><h2>Verträglichkeit</h2><div style="white-space:pre-wrap">${esc(r.note)}</div></div>`:''}
+<div class="row"><button class="btn" style="flex:1" onclick="openMeal({type:'recipe',refId:'${r.id}'})">🍽️ Gegessen</button><button class="btn sec" onclick="openRecipeEditor('${r.id}')">Bearbeiten</button><button class="btn red" onclick="delRecipe('${r.id}')">🗑</button></div>`}
+async function delRecipe(id){if(!await ask('Rezept wirklich löschen?','Löschen'))return;S.recipes=S.recipes.filter(r=>r.id!==id);save('recipes');st.view=null;render()}
+
+/* Rezept-Editor */
+let D=null;
+function openRecipeEditor(id){const r=id?rec(id):null;D=r?JSON.parse(JSON.stringify(r)):{id:null,title:'',img:'',portions:2,items:[],steps:'',note:'',phases:[]};
+  D.phases=D.phases||[];D.rows=D.items.map(it=>({name:ing(it.ingId)?.name||'',g:String(it.g).replace('.',',')}));if(!D.rows.length)D.rows.push({name:'',g:''},{name:'',g:''});renderRecipeEditor()}
+function rowsHtml(){return D.rows.map((r,i)=>`<div class="row" style="margin-bottom:6px"><input list="ingNames" style="flex:2" placeholder="Zutat, z. B. Karotte" value="${esc(r.name)}" oninput="D.rows[${i}].name=this.value"><input style="flex:1;min-width:0" type="text" inputmode="decimal" placeholder="g" value="${esc(r.g)}" oninput="D.rows[${i}].g=this.value"><button type="button" class="btn red sm" onclick="D.rows.splice(${i},1);$('#rows').innerHTML=rowsHtml()">✕</button></div>`).join('')}
+function renderRecipeEditor(){openSheet(`<h3>${D.id?'Rezept bearbeiten':'Neues Rezept'}</h3>
+<label>Name</label><input value="${esc(D.title)}" oninput="D.title=this.value" placeholder="z. B. Ofengemüse mit Reis">
+<label>Bild vom Gericht</label><div id="rImg">${imgPick(D.img,'pickRecipeImg','🍲')}</div>
+<label>Portionen</label><input type="text" inputmode="decimal" value="${f1(D.portions)}" oninput="D.portions=num(this.value)||1">
+<label>Zutaten (Menge in g bzw. ml)</label><div id="rows">${rowsHtml()}</div>
+<button type="button" class="btn sec sm" onclick="D.rows.push({name:'',g:''});$('#rows').innerHTML=rowsHtml()">+ Zutat</button>
+<div class="muted" style="margin-top:6px">Neue Zutaten werden automatisch angelegt – fehlende Nährwerte fragt die App danach ab.</div>
+<label>Zubereitung</label><textarea rows="5" oninput="D.steps=this.value">${esc(D.steps)}</textarea>
+<label>Notiz zur Verträglichkeit</label><textarea rows="2" oninput="D.note=this.value" placeholder="z. B. gut verträglich ohne Zwiebel">${esc(D.note)}</textarea>
+<label>Tut mir gut in Zyklusphase</label>${phaseChips(D.phases,'rPh','togRPh')}
+<div class="row" style="margin-top:18px"><button class="btn sec" onclick="closeSheet()">Abbrechen</button><button class="btn" style="flex:1" onclick="saveRecipe()">Speichern</button></div>
+<datalist id="ingNames">${S.ingredients.map(i=>`<option value="${esc(i.name)}">`).join('')}</datalist>`)}
+function togRPh(p){toggleIn(D.phases,p);$('#rPh').outerHTML=phaseChips(D.phases,'rPh','togRPh')}
+function pickRecipeImg(rm){if(rm){D.img='';$('#rImg').innerHTML=imgPick('','pickRecipeImg','🍲');return}pickImage(u=>{D.img=u;$('#rImg').innerHTML=imgPick(u,'pickRecipeImg','🍲')})}
+function findIngByName(n){n=n.trim().toLowerCase();return S.ingredients.find(x=>x.name.trim().toLowerCase()===n)}
+function saveRecipe(){const title=(D.title||'').trim();if(!title)return toast('Bitte einen Namen eingeben');
+  const items=[],created=[];
+  for(const row of D.rows){const name=(row.name||'').trim();if(!name)continue;const g=num(row.g);if(g===null||g<=0)return toast(`Menge für „${name}“ fehlt`);
+    let i=findIngByName(name);if(!i){i=newIng(name);S.ingredients.push(i);created.push(i)}
+    const ex=items.find(x=>x.ingId===i.id);if(ex)ex.g+=g;else items.push({ingId:i.id,g})}
+  if(!items.length)return toast('Bitte mindestens eine Zutat eintragen');
+  const r={id:D.id||uid(),title,img:D.img,portions:D.portions||1,items,steps:D.steps||'',note:D.note||'',phases:D.phases,created:D.created||Date.now()};
+  const idx=S.recipes.findIndex(x=>x.id===r.id);if(idx>=0)S.recipes[idx]=r;else S.recipes.push(r);
+  save('recipes','ingredients');closeSheet();st.tab='rezepte';st.view={type:'recipe',id:r.id};render();scrollTo(0,0);
+  const inc=recipeIncomplete(r);
+  if(inc.length){fillQueue=inc.map(i=>i.id);toast(`${inc.length} Zutat${inc.length>1?'en brauchen':' braucht'} noch Daten`);setTimeout(()=>openIngEditor(fillQueue[0]),350)}else toast('Rezept gespeichert ✓')}
+function fillMissing(rid){const r=rec(rid);fillQueue=recipeIncomplete(r).map(i=>i.id);if(fillQueue.length)openIngEditor(fillQueue[0])}
+
+/* ===== Zutaten ===== */
+function ingList(){const q=st.q2.trim().toLowerCase(),f=st.ingFilter;
+  const is=S.ingredients.filter(i=>(!q||i.name.toLowerCase().includes(q))&&(f==='all'||(f==='missing'&&incomplete(i))||(f==='plant'&&i.plant===true))).sort((a,b)=>a.name.localeCompare(b.name));
+  if(!is.length)return S.ingredients.length?'<div class="muted">Keine Treffer.</div>':'<div class="empty"><div class="e">🥕</div>Noch keine Zutaten.<br>Sie entstehen automatisch beim Anlegen von Rezepten – oder lege sie hier an.</div>';
+  return is.map(i=>{const m=missingFields(i);return `<div class="it" onclick="openIngEditor('${i.id}')">${thumb(i.img,'🥕')}<div style="flex:1;min-width:0"><b>${esc(i.name)}</b> ${i.plant?'🌿':''} ${i.fodmap?FOD[i.fodmap].slice(0,2):''}<div class="muted">${isNull(i.n.kcal)?'':Math.round(i.n.kcal)+' kcal · '}${isNull(i.n.protein)?'':f1(i.n.protein)+' g Eiweiß · '}${isNull(i.n.fiber)?'':f1(i.n.fiber)+' g Ballastst. '}pro 100 g</div>${m.length?`<span class="badge w">fehlt: ${m.length>3?m.length+' Angaben':esc(m.join(', '))}</span>`:''}</div></div>`}).join('')}
+function vZutaten(){const nm=S.ingredients.filter(incomplete).length;return `<div class="row" style="margin-bottom:10px"><input placeholder="🔍 Zutat suchen" value="${esc(st.q2)}" oninput="st.q2=this.value;$('#ilist').innerHTML=ingList()"><button class="btn" style="white-space:nowrap" onclick="openIngEditor()">+ Neu</button></div>
+<div class="chips" style="margin-bottom:12px">${[['all','Alle'],['missing',`⚠️ Unvollständig (${nm})`],['plant','🌿 Pflanzen']].map(([k,l])=>`<button class="chip ${st.ingFilter===k?'on':''}" onclick="st.ingFilter='${k}';render()">${l}</button>`).join('')}</div>
+${st.ingFilter==='missing'&&nm?`<button class="btn full" style="margin-bottom:12px" onclick="fillQueue=S.ingredients.filter(incomplete).map(i=>i.id);openIngEditor(fillQueue[0])">Alle nacheinander ergänzen</button>`:''}
+<div class="card list" id="ilist">${ingList()}</div>`}
+
+/* Zutaten-Editor */
+let E=null,fillQueue=[];
+function openIngEditor(id){const i=id?ing(id):newIng('');if(!i)return;E=JSON.parse(JSON.stringify(i));E.phases=E.phases||[];E._new=!id;renderIngEditor()}
+function tolerance(id){const days=new Set();S.meals.forEach(m=>{const has=m.type==='ing'?m.refId===id:(rec(m.refId)?.items||[]).some(it=>it.ingId===id);if(has)days.add(m.date)});
+  if(!days.size)return'';let txt=`${days.size}× gegessen`;const after=[];
+  days.forEach(d=>{const v=[symScore(S.symptoms[d]),symScore(S.symptoms[addDays(d,1)])].filter(x=>x!==null);if(v.length)after.push(Math.max(...v))});
+  const all=Object.values(S.symptoms).map(symScore);
+  if(after.length>=3&&all.length>=5){const a=avg(after),b=avg(all);txt+=` · Beschwerden am selben/nächsten Tag Ø ${f1(a)} (insgesamt Ø ${f1(b)}) ${a>b+1?'🔴':a>b+.4?'🟡':'🟢'}`}
+  else txt+=' · für eine Auswertung braucht es mehr Bauchgefühl-Einträge';
+  return `<div class="info">📊 ${txt}</div>`}
+function renderIngEditor(){const qi=fillQueue.indexOf(E.id);
+openSheet(`${qi>=0?`<div class="warn" style="cursor:default">Fehlende Daten ergänzen · Zutat ${qi+1} von ${fillQueue.length}</div>`:''}
+<h3>${E._new?'Neue Zutat':esc(E.name)}</h3>${E._new?'':tolerance(E.id)}
+<label>Name</label><input value="${esc(E.name)}" oninput="E.name=this.value" placeholder="z. B. Haferflocken">
+<label>Bild</label><div id="iImg">${imgPick(E.img,'pickIngImg','🥕')}</div>
+<label>Nährwerte pro 100 g <span style="font-weight:400">– gelb = fehlt noch (z. B. von der Verpackung)</span></label>
+<div class="grid2">${NUT.map(([k,l,u])=>`<div><div class="muted" style="margin-bottom:3px">${l} (${u})</div><input class="${isNull(E.n[k])?'miss':''}" type="text" inputmode="decimal" value="${isNull(E.n[k])?'':String(E.n[k]).replace('.',',')}" placeholder="fehlt" oninput="E.n['${k}']=num(this.value);this.classList.toggle('miss',E.n['${k}']===null)"></div>`).join('')}</div>
+<label>Pflanzlich? (zählt für die ${S.settings.plantGoal||30} Pflanzen pro Woche)</label>
+<select class="${E.plant===null?'miss':''}" onchange="E.plant=this.value===''?null:this.value==='1';this.classList.toggle('miss',E.plant===null)"><option value="">– bitte wählen –</option><option value="1" ${E.plant===true?'selected':''}>🌿 Ja (Gemüse, Obst, Getreide, Hülsenfrüchte, Nüsse, Samen, Kräuter …)</option><option value="0" ${E.plant===false?'selected':''}>Nein</option></select>
+<label>FODMAP / Verträglichkeit</label><select onchange="E.fodmap=this.value">${Object.entries(FOD).map(([k,l])=>`<option value="${k}" ${E.fodmap===k?'selected':''}>${l}</option>`).join('')}</select>
+<label>Eigene Notiz</label><textarea rows="2" oninput="E.note=this.value" placeholder="z. B. nur gekocht gut verträglich">${esc(E.note)}</textarea>
+<label>Tut mir gut in Zyklusphase</label>${phaseChips(E.phases,'iPh','togIPh')}
+<div class="row" style="margin-top:18px">${E._new?'':'<button class="btn red" onclick="delIng()">🗑</button>'}<button class="btn sec" onclick="fillQueue=[];closeSheet();render()">${qi>=0?'Später':'Abbrechen'}</button><button class="btn" style="flex:1" onclick="saveIng()">${qi>=0&&qi<fillQueue.length-1?'Speichern & weiter':'Speichern'}</button></div>`)}
+function togIPh(p){toggleIn(E.phases,p);$('#iPh').outerHTML=phaseChips(E.phases,'iPh','togIPh')}
+function pickIngImg(rm){if(rm){E.img='';$('#iImg').innerHTML=imgPick('','pickIngImg','🥕');return}pickImage(u=>{E.img=u;$('#iImg').innerHTML=imgPick(u,'pickIngImg','🥕')},ING_IMG)}
+function saveIng(){const name=(E.name||'').trim();if(!name)return toast('Bitte einen Namen eingeben');
+  const dup=findIngByName(name);if(dup&&dup.id!==E.id)return toast('Diese Zutat gibt es schon');
+  const{_new,...i}=E;i.name=name;const idx=S.ingredients.findIndex(x=>x.id===i.id);if(idx>=0)S.ingredients[idx]=i;else S.ingredients.push(i);save('ingredients');
+  const wasQ=fillQueue.includes(i.id);fillQueue=fillQueue.filter(id=>id!==i.id&&ing(id)&&incomplete(ing(id)));
+  closeSheet();render();
+  if(wasQ&&fillQueue.length){setTimeout(()=>openIngEditor(fillQueue[0]),250)}
+  else toast(incomplete(i)?'Gespeichert – es fehlen noch Angaben':(wasQ?'Alles vollständig 🎉':'Gespeichert ✓'))}
+async function delIng(){const used=S.recipes.filter(r=>(r.items||[]).some(it=>it.ingId===E.id));
+  if(used.length)return toast(`Wird in ${used.length} Rezept${used.length>1?'en':''} verwendet – dort zuerst entfernen`);
+  if(!await ask(`„${E.name}“ löschen?`,'Löschen'))return;S.ingredients=S.ingredients.filter(i=>i.id!==E.id);fillQueue=fillQueue.filter(id=>id!==E.id);save('ingredients');closeSheet();render()}
+
+/* ===== Körper ===== */
+function phaseBar(cy){const segs=[['mens',cy.pl],['foll',Math.max(0,cy.ov-2-cy.pl)],['ovu',3],['lut',Math.max(0,cy.L-cy.ov-1)]];const tot=segs.reduce((s,x)=>s+x[1],0)||1;
+  return `<div class="phasebar">${segs.map(([p,n])=>`<div style="width:${n/tot*100}%;background:${PH_COL[p]}" title="${PH[p]}"></div>`).join('')}<div class="marker" style="left:calc(${Math.min(cy.day,tot)/tot*100}% - 2px)"></div></div><div class="chips" style="font-size:11px">${Object.keys(PH).map(p=>`<span class="muted"><span style="color:${PH_COL[p]}">●</span> ${PH[p]}</span>`).join(' ')}</div>`}
+/* ===== Meine Daten ===== */
+const ACT={alltag:['Alltag – bis 5 Std. Sport pro Woche',0],sport:['Sportlich – über 5 Std. pro Woche',1.2],intensiv:['Intensiv – über 5 Std., Kraft-/Leistungssport',1.6]};
+function ageOf(b){if(!isDate(b||''))return null;const t=parse(today()),d=parse(b);let a=t.getFullYear()-d.getFullYear();if(t.getMonth()<d.getMonth()||(t.getMonth()===d.getMonth()&&t.getDate()<d.getDate()))a--;return a}
+const sortedW=()=>[...S.weights].sort((a,b)=>a.date.localeCompare(b.date));
+function bodyInfo(){const ws=sortedW(),w=ws.length?ws[ws.length-1]:null,h=S.profile.height,age=ageOf(S.profile.birth);
+  const bmi=w&&h?w.kg/((h/100)**2):null;let cat=null;
+  if(bmi!==null)cat=bmi<18.5?['Untergewicht','#E9A825']:bmi<25?['Normalgewicht','#3BA55D']:bmi<30?['Übergewicht','#E9A825']:['Adipositas','#E2483D'];
+  let prot=null;if(w&&age!==null&&age>=19){const base=age>=65?1.0:0.8,fac=Math.max(base,ACT[S.profile.activity]?.[1]||0);let refKg=w.kg,adj=false;
+    if(bmi!==null&&bmi>=25){refKg=25*(h/100)**2;adj=true}prot={g:Math.round(fac*refKg),fac,refKg,adj,base}}
+  return{w,h,age,bmi,cat,prot}}
+function profileCard(){const I=bodyInfo(),P=I.prot,ws=sortedW().slice(-30);
+  return `<div class="card"><h2>👤 Meine Daten <button class="btn sec sm" onclick="openProfile()">Bearbeiten</button></h2>
+<div class="nut"><div><b>${I.w?f1(I.w.kg):'–'}</b><span>kg</span></div><div><b>${I.h?f1(I.h):'–'}</b><span>cm</span></div><div><b>${I.age??'–'}</b><span>Jahre</span></div><div><b style="${I.cat?'color:'+I.cat[1]:''}">${I.bmi?f1(I.bmi):'–'}</b><span>BMI</span></div></div>
+${I.cat?`<div class="muted" style="margin-top:6px;text-align:right">BMI-Einordnung (WHO): <b style="color:${I.cat[1]}">${I.cat[0]}</b></div>`:''}
+${P?`<div class="info" style="margin:12px 0 0"><div style="font-size:17px">💪 Eiweißbedarf: <b>ca. ${P.g} g pro Tag</b></div>
+<div style="font-size:13px;margin-top:4px">${f1(P.fac)} g × ${f1(P.refKg)} kg${P.adj?' (Gewicht bei BMI 25)':''} · ${esc(ACT[S.profile.activity||'alltag'][0])}</div></div>
+<div class="muted" style="margin-top:6px">Grundlage: DGE-Referenzwert ${f1(P.base)} g/kg${I.age>=65?' ab 65 Jahren':' für 19–64 Jahre'}; bei über 5 Std. Sport pro Woche nennt die DGE 1,2–2,0 g/kg. ${P.adj?'Die DGE-Werte gelten für Normalgewicht, daher wird bei einem BMI ab 25 mit dem Gewicht bei BMI 25 gerechnet. ':''}Bei Erkrankungen (z. B. der Niere) bitte ärztlich abklären.</div>`
+:`<div class="muted" style="margin-top:10px">${I.age!==null&&I.age<19?'Die Eiweißberechnung ist für Erwachsene ab 19 Jahren ausgelegt.':'Trag Gewicht, Größe und Geburtsdatum ein, um BMI und Eiweißbedarf zu berechnen.'}</div>`}
+${ws.length>=2?`<label>Gewichtsverlauf</label>${lineChart([{k:'kg',color:'#F2672E',vals:ws.map(w=>w.kg)}],ws.map(w=>parse(w.date).getDate()+'.'+(parse(w.date).getMonth()+1)+'.'),{auto:true})}`:''}
+<div class="row" style="margin-top:10px"><button class="btn" style="flex:1" onclick="openWeight()">⚖️ Gewicht eintragen</button>${S.weights.length?'<button class="btn sec" onclick="openWeightList()">Verlauf</button>':''}</div></div>`}
+let PF=null;
+function openProfile(){PF={...S.profile};openSheet(`<h3>Meine Daten</h3>
+<label>Geburtsdatum</label><input type="date" value="${PF.birth||''}" onchange="PF.birth=isDate(this.value)?this.value:null">
+<label>Größe (cm)</label><input type="text" inputmode="decimal" placeholder="z. B. 172" value="${PF.height?String(PF.height).replace('.',','):''}" oninput="PF.height=num(this.value)">
+<label>Aktivität (für den Eiweißbedarf)</label><select onchange="PF.activity=this.value">${Object.entries(ACT).map(([k,[l]])=>`<option value="${k}" ${PF.activity===k?'selected':''}>${l}</option>`).join('')}</select>
+<div class="muted" style="margin-top:8px">Dein Gewicht trägst du separat ein – so entsteht ein Verlauf.</div>
+<div class="row" style="margin-top:16px"><button class="btn sec" onclick="closeSheet()">Abbrechen</button><button class="btn" style="flex:1" onclick="saveProfile()">Speichern</button></div>`)}
+function saveProfile(){if(PF.height!==null&&(PF.height<100||PF.height>250))return toast('Bitte Größe in cm angeben (z. B. 172)');S.profile=PF;save('profile');closeSheet();render();toast('Gespeichert ✓')}
+let WT=null;
+function openWeight(){const l=sortedW().pop();WT={date:today(),kg:l?l.kg:null};openSheet(`<h3>Gewicht eintragen</h3>
+<label>Gewicht (kg)</label><input type="text" inputmode="decimal" placeholder="z. B. 62,5" value="${WT.kg?String(WT.kg).replace('.',','):''}" oninput="WT.kg=num(this.value)">
+<label>Datum</label><input type="date" value="${WT.date}" onchange="WT.date=this.value">
+<div class="row" style="margin-top:16px"><button class="btn sec" onclick="closeSheet()">Abbrechen</button><button class="btn" style="flex:1" onclick="saveWeight()">Speichern</button></div>`)}
+function saveWeight(){if(!(WT.kg>=25&&WT.kg<=350))return toast('Bitte Gewicht in kg angeben');if(!isDate(WT.date))return toast('Bitte Datum wählen');
+  S.weights=S.weights.filter(w=>w.date!==WT.date);S.weights.push({date:WT.date,kg:WT.kg});save('weights');closeSheet();render();toast('Gewicht gespeichert ✓')}
+function openWeightList(){openSheet(`<h3>Gewichtsverlauf</h3><div class="list">${sortedW().reverse().map(w=>`<div class="it" style="cursor:default"><div style="flex:1"><b>${f1(w.kg)} kg</b><div class="muted">${fmtDate(w.date)}</div></div><button class="btn red sm" onclick="delWeight('${w.date}')">✕</button></div>`).join('')}</div><button class="btn sec full" style="margin-top:14px" onclick="closeSheet()">Schließen</button>`)}
+function delWeight(d){S.weights=S.weights.filter(w=>w.date!==d);save('weights');render();S.weights.length?openWeightList():closeSheet()}
+
+/* ===== Nährstoff-Verlauf ===== */
+const NSER=[['fiber','Ballaststoffe','#3BA55D'],['protein','Eiweiß','#E2483D'],['carbs','Kohlenhydrate','#E9A825']];
+function daySum(d){const ms=S.meals.filter(m=>m.date===d);if(!ms.length)return null;const t=zero();ms.forEach(m=>addTo(t,mealInfo(m).t));return t}
+function niceMax(v){if(v<=0)return 10;const p=Math.pow(10,Math.floor(Math.log10(v))),n=v/p;return (n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10)*p}
+function lineChart(series,labels,o={}){const W=340,H=170,L=34,R=8,T=10,Bt=22,n=labels.length;const all=series.flatMap(s=>s.vals.filter(v=>v!==null)).concat(o.goal?[o.goal]:[]);
+  let mn=0,mx=niceMax(Math.max(0,...all));if(o.auto&&all.length){mn=Math.floor(Math.min(...all)-1);mx=Math.ceil(Math.max(...all)+1);if(mx-mn<4){mn-=2;mx+=2}}
+  const x=i=>L+(n<2?(W-L-R)/2:i*(W-L-R)/(n-1)),y=v=>T+(H-T-Bt)*(1-(v-mn)/(mx-mn));
+  let g='';for(let k=0;k<=4;k++){const v=mn+(mx-mn)*k/4,yy=y(v);g+=`<line x1="${L}" x2="${W-R}" y1="${yy}" y2="${yy}" style="stroke:var(--line)" stroke-width="1"/><text x="${L-5}" y="${yy+3.5}" text-anchor="end" font-size="9" style="fill:var(--m)">${f1(v)}</text>`}
+  const step=Math.ceil(n/7);labels.forEach((l,i)=>{if((i%step===0&&n-1-i>=step)||i===n-1)g+=`<text x="${x(i)}" y="${H-6}" text-anchor="middle" font-size="9" style="fill:var(--m)">${l}</text>`});
+  if(o.goal)g+=`<line x1="${L}" x2="${W-R}" y1="${y(o.goal)}" y2="${y(o.goal)}" stroke="#3BA55D" stroke-width="1.5" stroke-dasharray="5 4"/><text x="${W-R}" y="${y(o.goal)-4}" text-anchor="end" font-size="9" fill="#3BA55D">${esc(o.goalLbl||'Ziel')}</text>`;
+  series.forEach(s=>{let d='',pen=false;s.vals.forEach((v,i)=>{if(v===null){pen=false;return}d+=(pen?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)+' ';pen=true});
+    g+=`<path d="${d}" fill="none" stroke="${s.color}" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+    s.vals.forEach((v,i)=>{if(v!==null)g+=`<circle cx="${x(i)}" cy="${y(v)}" r="${n>20?2:3}" fill="${s.color}"/>`})});
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;display:block">${g}</svg>`}
+function nutCard(){const d=today(),N=st.nutR,days=[...Array(N)].map((_,i)=>addDays(d,i-N+1)),sums=days.map(daySum),has=sums.some(Boolean);
+  const sel=st.nutM==='all'?NSER:NSER.filter(x=>x[0]===st.nutM);
+  const series=sel.map(([k,l,c])=>({k,l,color:c,vals:sums.map(t=>t?t[k]:null)}));
+  const stats=series.map(s=>{const v=s.vals.filter(x=>x!==null);return `<div><b style="color:${s.color}">${v.length?f1(avg(v)):'–'} g</b><span>Ø ${s.l}</span></div>`}).join('');
+  return `<div class="card"><h2>🍽️ Nährstoff-Verlauf</h2>
+<div class="chips" style="margin-bottom:6px">${[['all','Alle zusammen'],...NSER.map(([k,l])=>[k,l])].map(([k,l])=>`<button class="chip ${st.nutM===k?'on':''}" onclick="st.nutM='${k}';render()">${l}</button>`).join('')}</div>
+<div class="chips" style="margin-bottom:8px">${[7,14,30].map(r=>`<button class="chip ${st.nutR===r?'on':''}" onclick="st.nutR=${r};render()">${r} Tage</button>`).join('')}</div>
+${has?`${lineChart(series,days.map(x=>parse(x).getDate()+'.'),(()=>{const P=bodyInfo().prot;return P&&series.some(x=>x.k==='protein')?{goal:P.g,goalLbl:'Eiweiß-Ziel '+P.g+' g'}:{}})())}
+<div class="row" style="justify-content:center;gap:14px;margin:4px 0 10px">${series.map(s=>`<span class="muted"><span style="color:${s.color}">●</span> ${s.l}</span>`).join('')}</div>
+<div class="nut" style="grid-template-columns:repeat(${series.length},1fr)">${stats}</div>
+<div class="muted" style="margin-top:8px">Angaben in Gramm pro Tag. Tage ohne Mahlzeit-Eintrag werden ausgelassen${sums.some((t,i)=>t&&S.meals.some(m=>m.date===days[i]&&mealInfo(m).inc))?'; einige Tage sind unvollständig, weil Zutaten-Daten fehlen':''}.</div>`
+:'<div class="muted">Noch keine Mahlzeiten in diesem Zeitraum. Trag unter „Heute“ ein, was du gegessen hast.</div>'}</div>`}
+function vKoerper(){const d=today(),days=[...Array(14)].map((_,i)=>addDays(d,i-13)),sg=S.settings.stepGoal||8000;
+  const maxS=Math.max(sg*1.1,...days.map(x=>S.steps[x]||0));const last7=days.slice(-7).map(x=>S.steps[x]).filter(Boolean);
+  const cy=cycleInfo(d);const symDays=days.filter(x=>S.symptoms[x]);
+  return `
+${profileCard()}
+${nutCard()}
+<div class="card"><h2>👟 Schritte <span class="muted">letzte 14 Tage</span></h2>${barChart(days.map(x=>({lbl:parse(x).getDate(),v:S.steps[x]||0})),maxS,sg)}
+<div class="row" style="justify-content:space-between"><span class="muted">Ø 7 Tage: <b>${last7.length?Math.round(avg(last7)).toLocaleString('de-DE'):'–'}</b></span><span class="row muted">Ziel <input style="width:92px;padding:5px 8px" type="number" inputmode="numeric" value="${sg}" onchange="setSetting('stepGoal',Math.max(500,+this.value||8000))"></span></div>
+<div class="muted" style="margin-top:6px">Schritte trägst du unter „Heute“ ein (Zahl aus der Health-App).</div></div>
+${rideStats(d,days)}
+${medAnalysis()}
+<div class="card"><h2>💛 Bauch-Verlauf <span class="muted">letzte 14 Tage</span></h2>${symDays.length?barChart(days.map(x=>({lbl:parse(x).getDate(),v:symScore(S.symptoms[x])||0})),10):'<div class="muted">Noch keine Einträge. Trag unter „Heute“ dein Bauchgefühl ein.</div>'}
+${symDays.length?'<div class="muted">Balken = Ø aus Schmerzen & Blähungen (0–10). Niedriger ist besser.</div>':''}</div>
+<div class="card"><h2>🙂 Befinden <span class="muted">letzte 14 Tage</span></h2>
+<div class="chips" style="margin-bottom:6px">${WB.map(([k,l])=>`<button class="chip ${st.wbM===k?'on':''}" onclick="st.wbM='${k}';render()">${l}</button>`).join('')}</div>
+${days.some(x=>S.wellbeing[x])?barChart(days.map(x=>({lbl:parse(x).getDate(),v:S.wellbeing[x]?S.wellbeing[x][st.wbM]:0})),10)+`<div class="muted">${WB.find(w=>w[0]===st.wbM)[2]?'Höher ist besser.':'Niedriger ist besser.'}</div>`:'<div class="muted">Noch keine Einträge. Trag unter „Heute“ dein Befinden ein.</div>'}</div>
+<div class="card"><h2>🌸 Zyklus</h2>
+<div class="chips" style="margin-bottom:10px"><button class="chip ${S.settings.cycleMode!=='pill'?'on':''}" onclick="setSetting('cycleMode','natural')">🌸 Natürlicher Zyklus</button><button class="chip ${S.settings.cycleMode==='pill'?'on':''}" onclick="setSetting('cycleMode','pill')">💊 Pille durchgehend</button></div>
+${cy&&cy.pill?`<div style="font-size:18px"><b>💊 Pille im Langzyklus</b></div><div class="muted">Keine Periode und keine Zyklusphasen – Phasen-Vorschläge sind pausiert.</div>
+<label>Pille durchgehend seit</label><input type="date" value="${S.settings.pillSince||''}" onchange="setSetting('pillSince',isDate(this.value)?this.value:null)">
+${S.settings.pillSince?`<div class="muted" style="margin-top:4px">Das sind ${diffDays(S.settings.pillSince,d)} Tage.</div>`:''}
+<label>Blutung / Schmierblutung eintragen</label><div class="row"><input type="date" id="perDate" value="${d}" style="flex:1"><button class="btn" style="white-space:nowrap" onclick="addPeriod()">🩸 Eintragen</button></div>
+${S.periods.length?`<label>Bisherige Blutungen</label><div class="chips">${[...S.periods].sort().reverse().map(p=>`<span class="chip">${fmtDate(p)} <a onclick="delPeriod('${p}')">✕</a></span>`).join('')}</div>`:''}
+<div class="muted" style="margin-top:10px">Wechselst du später zum natürlichen Zyklus, trag dort den ersten Tag deiner Periode ein.</div>`
+:`${cy?`<div style="font-size:18px"><b>${PH_ICON[cy.ph]} ${PH[cy.ph]}</b> · Tag ${cy.day}</div><div class="muted">Ø Zykluslänge ${cy.L} Tage · nächste Periode etwa ${fmtDate(cy.next)}${cy.late?' (überfällig)':''}</div>${phaseBar(cy)}`:'<div class="muted">Trag den ersten Tag deiner letzten Periode ein, um zu starten.</div>'}
+<div class="row" style="margin-top:12px"><input type="date" id="perDate" value="${d}" style="flex:1"><button class="btn" style="white-space:nowrap" onclick="addPeriod()">🩸 Periode begann</button></div>
+${S.periods.length?`<label>Bisherige Periodenbeginne</label><div class="chips">${[...S.periods].sort().reverse().map(p=>`<span class="chip">${fmtDate(p)} <a onclick="delPeriod('${p}')">✕</a></span>`).join('')}</div>`:''}
+<div class="grid2"><div><label>Zykluslänge (Start)</label><input type="number" inputmode="numeric" value="${S.settings.cycleLen}" onchange="setSetting('cycleLen',Math.min(45,Math.max(18,+this.value||28)))"></div><div><label>Periodendauer</label><input type="number" inputmode="numeric" value="${S.settings.periodLen}" onchange="setSetting('periodLen',Math.min(10,Math.max(2,+this.value||5)))"></div></div>
+${cy?`<label>Vorschläge für die ${PH[cy.ph]}</label>${suggestions(cy.ph,6)}`:''}
+<div class="muted" style="margin-top:10px">Ab 2 eingetragenen Perioden rechnet die App mit deiner echten Ø-Zykluslänge. Die Phasen sind nur eine Schätzung – kein Verhütungs- oder Diagnosemittel.</div>`}</div>`}
+function addPeriod(){const v=$('#perDate').value;if(!isDate(v))return toast('Bitte Datum wählen');if(!S.periods.includes(v))S.periods.push(v);save('periods');render();toast('Eingetragen ✓')}
+async function delPeriod(p){if(!await ask(`Eintrag vom ${fmtDate(p)} löschen?`,'Löschen'))return;S.periods=S.periods.filter(x=>x!==p);save('periods');render()}
+function setSetting(k,v){S.settings[k]=v;save('settings');render()}
+
+/* ===== Mehr: Backup & Datenschutz ===== */
+function vMehr(){const lb=S.settings.lastBackup;return `
+<div class="card"><h2>🔒 Datenschutz</h2><p>Alle Daten – Rezepte, Bilder, Gesundheits-, Befindens- und Zykluseinträge – werden <b>nur lokal auf diesem Gerät</b> gespeichert. Die App sendet nichts ins Internet: kein Konto, kein Server, kein Tracking.</p>
+<p class="muted">Schütze dein iPhone mit Code / Face ID. Achtung: Wenn du die Website-Daten in Safari löschst oder die App vom Home-Bildschirm entfernst, sind die Daten weg – deshalb regelmäßig ein Backup machen.</p>
+<div class="muted">Speicher: ${db?(persisted?'✅ dauerhaft':'lokal (Browser darf bei Platzmangel aufräumen)'):'⚠️ nicht verfügbar – Daten gehen beim Schließen verloren'}</div></div>
+<div class="card"><h2>💾 Backup</h2><button class="btn full" onclick="exportData()">Backup exportieren</button><button class="btn sec full" style="margin-top:8px" onclick="importData()">Backup importieren</button>
+<div class="muted" style="margin-top:8px">Letztes Backup: ${lb?new Date(lb).toLocaleDateString('de-DE'):'noch keins'}. Speichere die Datei z. B. in „Dateien“ auf dem iPhone.</div></div>
+<div class="card"><h2>⚙️ Einstellungen</h2><label style="margin-top:0">Erscheinungsbild</label><div class="chips">${[['auto','📱 Wie iPhone'],['light','☀️ Hell'],['dark','🌙 Dunkel']].map(([k,l])=>`<button class="chip ${S.settings.theme===k?'on':''}" onclick="setTheme('${k}')">${l}</button>`).join('')}</div><label>Dunkles Design</label><div class="chips">${Object.entries(DS).map(([k,[l]])=>`<button class="chip ${S.settings.darkStyle===k?'on':''}" onclick="setDarkStyle('${k}')">${l}</button>`).join('')}</div><label>Wochenziel Pflanzenvielfalt</label><input type="number" inputmode="numeric" value="${S.settings.plantGoal}" onchange="setSetting('plantGoal',Math.max(5,+this.value||30))"></div>
+<div class="card"><h2>📊 Überblick</h2><div class="muted">${S.recipes.length} Rezepte · ${S.ingredients.length} Zutaten · ${S.meals.length} Mahlzeiten · ${Object.keys(S.symptoms).length} Bauch-Einträge · ${Object.keys(S.wellbeing).length} Befindens-Einträge · ${S.rides.length} Radfahrten · ${S.meds.length} Medikamenten-Einnahmen · ${S.periods.length} Perioden</div></div>
+<div class="card"><h2>🗑️ Zurücksetzen</h2><button class="btn red full" onclick="wipe()">Alle Daten löschen</button></div>
+<div class="muted" style="text-align:center;margin:10px 0">BauchGut · Version 1.7</div>`}
+async function exportData(){const data=JSON.stringify({app:'BauchGut',v:1,exported:new Date().toISOString(),data:S});const name=`bauchgut-backup-${today()}.json`;
+  const done=()=>{S.settings.lastBackup=new Date().toISOString();save('settings');render();toast('Backup erstellt ✓')};
+  let file;try{file=new File([data],name,{type:'application/json'})}catch(e){file=new Blob([data],{type:'application/json'})}
+  if(navigator.canShare&&file instanceof File&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:name});return done()}catch(e){if(e.name==='AbortError')return}}
+  try{const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);done()}catch(e){toast('Export nicht möglich')}}
+function clean(d){const id=x=>String(x||'').replace(/[^a-z0-9]/gi,'').slice(0,40)||uid();const img=x=>typeof x==='string'&&x.startsWith('data:image/')?x:'';const n=x=>{const v=Number(x);return x===null||x===''||x===undefined||isNaN(v)?null:v};
+  const out=emptyState();
+  (d.meds||[]).forEach(m=>{if(isDate(m.date)&&m.name)out.meds.push({id:id(m.id),date:m.date,time:/^\d{2}:\d{2}$/.test(m.time)?m.time:'',name:String(m.name).slice(0,80),dose:String(m.dose||'').slice(0,60),reason:String(m.reason||'').slice(0,120),effect:String(m.effect||'').slice(0,500)})});
+  {const pr=d.profile||{};out.profile={birth:isDate(pr.birth||'')?pr.birth:null,height:n(pr.height),activity:ACT[pr.activity]?pr.activity:'alltag'}}
+  (d.weights||[]).forEach(w=>{if(isDate(w.date)&&n(w.kg)>0)out.weights.push({date:w.date,kg:n(w.kg)})});
+  (d.rides||[]).forEach(r=>{if(isDate(r.date)&&n(r.km)>0)out.rides.push({id:id(r.id),date:r.date,km:n(r.km),min:n(r.min)||0,type:r.type==='ebike'?'ebike':'bike',note:String(r.note||'')})});
+  (d.ingredients||[]).forEach(i=>out.ingredients.push({id:id(i.id),name:String(i.name||'?'),img:img(i.img),n:Object.fromEntries(NUT.map(([k])=>[k,n(i.n?.[k])])),plant:i.plant===true?true:i.plant===false?false:null,fodmap:['gruen','gelb','rot'].includes(i.fodmap)?i.fodmap:'',note:String(i.note||''),phases:(i.phases||[]).filter(p=>PH[p])}));
+  (d.recipes||[]).forEach(r=>out.recipes.push({id:id(r.id),title:String(r.title||'?'),img:img(r.img),portions:n(r.portions)||1,items:(r.items||[]).map(it=>({ingId:id(it.ingId),g:n(it.g)||0})),steps:String(r.steps||''),note:String(r.note||''),phases:(r.phases||[]).filter(p=>PH[p]),created:n(r.created)||Date.now()}));
+  (d.meals||[]).forEach(m=>{if(isDate(m.date))out.meals.push({id:id(m.id),type:m.type==='ing'?'ing':'recipe',refId:id(m.refId),date:m.date,time:/^\d{2}:\d{2}$/.test(m.time)?m.time:'',portions:n(m.portions)||1,g:n(m.g)||0})});
+  Object.entries(d.steps||{}).forEach(([k,v])=>{if(isDate(k)&&n(v))out.steps[k]=n(v)});
+  Object.entries(d.symptoms||{}).forEach(([k,s])=>{if(isDate(k)&&s)out.symptoms[k]={pain:n(s.pain)||0,bloat:n(s.bloat)||0,stress:n(s.stress)||0,stool:n(s.stool)||0,note:String(s.note||'')}});
+  Object.entries(d.wellbeing||{}).forEach(([k,w])=>{if(isDate(k)&&w){const o={note:String(w.note||'')};WB.forEach(([x])=>o[x]=n(w[x])??0);out.wellbeing[k]=o}});
+  out.periods=(d.periods||[]).filter(isDate);
+  const s=d.settings||{};['stepGoal','cycleLen','periodLen','plantGoal'].forEach(k=>{if(n(s[k]))out.settings[k]=n(s[k])});if(typeof s.lastBackup==='string')out.settings.lastBackup=s.lastBackup;if(s.cycleMode==='pill')out.settings.cycleMode='pill';if(isDate(s.pillSince))out.settings.pillSince=s.pillSince;if(['auto','light','dark'].includes(s.theme))out.settings.theme=s.theme;if(DS[s.darkStyle])out.settings.darkStyle=s.darkStyle;
+  return out}
+function importData(){const inp=document.createElement('input');inp.type='file';inp.accept='application/json,.json';inp.onchange=async()=>{const f=inp.files[0];if(!f)return;
+  try{const j=JSON.parse(await f.text());if(j.app!=='BauchGut'||!j.data)throw 0;
+    if(!await ask('Backup importieren? Deine aktuellen Daten werden dabei ersetzt.','Importieren'))return;
+    S=clean(j.data);save(...KEYS);st.view=null;applyTheme();render();toast('Backup importiert ✓')}catch(e){toast('Das ist keine gültige BauchGut-Backup-Datei')}};inp.click()}
+async function wipe(){if(!await ask('Wirklich ALLE Daten löschen? Das kann nicht rückgängig gemacht werden.','Alles löschen'))return;
+  if(!await ask('Ganz sicher? Hast du ein Backup?','Ja, löschen'))return;
+  S=emptyState();save(...KEYS);applyTheme();st={tab:'heute',date:today(),view:null,q:'',q2:'',ingFilter:'all',wbM:'mood',nutM:'all',nutR:14};render();toast('Alle Daten gelöscht')}
+
+/* ===== Start ===== */
+function makeIcon(){try{const c=document.createElement('canvas');c.width=c.height=180;const x=c.getContext('2d');const g=x.createLinearGradient(0,0,180,180);g.addColorStop(0,'#F2672E');g.addColorStop(1,'#FF9A4D');x.fillStyle=g;x.fillRect(0,0,180,180);x.font='110px serif';x.textAlign='center';x.textBaseline='middle';x.fillText('🥗',90,98);const u=c.toDataURL('image/png');$('#touchIcon').href=u;$('#favIcon').href=u}catch(e){}}
+function handleHash(){const m=location.hash.match(/steps=(\d+)/);if(m){S.steps[today()]=+m[1];save('steps');toast(`${(+m[1]).toLocaleString('de-DE')} Schritte übernommen ✓`);try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}}
+(async()=>{await load();try{if(navigator.storage&&navigator.storage.persist)persisted=(await navigator.storage.persisted())||(await navigator.storage.persist())}catch(e){}
+  applyTheme();makeIcon();handleHash();render();shrinkOldIngImgs();if(!db)toast('⚠️ Speicher nicht verfügbar – Daten werden nicht gesichert')})();
+</script>
+</body>
+</html>
